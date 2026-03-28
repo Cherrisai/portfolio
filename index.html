@@ -229,17 +229,10 @@ section{padding:100px 48px;max-width:1200px;margin:0 auto}
 
 /* ═════════ FUTURE PLANS ═════════ */
 .timeline{position:relative;padding-left:48px}
-.timeline::before{content:'';position:absolute;left:3px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--ac),var(--ac2),var(--ac3));transform-origin:top;transform:scaleY(0);transition:none}
-.timeline.tl-animate::before{animation:tlLineDraw 1.5s ease forwards}
-@keyframes tlLineDraw{from{transform:scaleY(0)}to{transform:scaleY(1)}}
-.tl-item{opacity:0;transform:translateY(20px);transition:opacity .5s ease,transform .5s ease}
-.timeline.tl-animate .tl-item:nth-child(1){opacity:1;transform:translateY(0);transition-delay:.3s}
-.timeline.tl-animate .tl-item:nth-child(2){opacity:1;transform:translateY(0);transition-delay:.6s}
-.timeline.tl-animate .tl-item:nth-child(3){opacity:1;transform:translateY(0);transition-delay:.9s}
-.timeline.tl-animate .tl-item:nth-child(4){opacity:1;transform:translateY(0);transition-delay:1.2s}
-.timeline.tl-animate .tl-item:nth-child(5){opacity:1;transform:translateY(0);transition-delay:1.5s}
+.timeline::before{content:'';position:absolute;left:3px;top:14px;bottom:14px;width:2px;background:rgba(0,229,255,.12)}
+.tl-item{position:relative;opacity:1;transform:none}
 
-.tl-item{position:relative;margin-bottom:52px}
+.tl-item{margin-bottom:52px}
 .tl-item::before{content:'';position:absolute;left:-44px;top:8px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid rgba(0,229,255,.3);transition:all .5s;z-index:2}
 .tl-item::after{content:'';position:absolute;left:-40px;top:12px;width:6px;height:6px;border-radius:50%;background:var(--ac);z-index:3;animation:dotGlow 2.5s ease infinite;box-shadow:0 0 6px rgba(0,229,255,.5)}
 @keyframes dotGlow{0%,100%{box-shadow:0 0 6px rgba(0,229,255,.5);opacity:1}50%{box-shadow:0 0 16px rgba(0,229,255,.8),0 0 30px rgba(0,229,255,.3);opacity:.7}}
@@ -368,7 +361,7 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:40px 80px;display:flex
 
   /* Timeline */
   .timeline{padding-left:32px}
-  .timeline::before{left:2px}
+  .timeline::before{left:2px;top:12px;bottom:12px}
   .tl-item::before{left:-30px;width:12px;height:12px}
   .tl-item::after{left:-27px;top:11px;width:5px;height:5px}
   .tl-title{font-size:18px}
@@ -464,7 +457,7 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:40px 80px;display:flex
 
   /* Timeline / Future Plans - fix left cutoff */
   .timeline{padding-left:24px}
-  .timeline::before{left:1px}
+  .timeline::before{left:1px;top:10px;bottom:10px}
   .tl-item{margin-bottom:30px;padding-left:0}
   .tl-item::before{left:-22px;width:10px;height:10px;top:5px}
   .tl-item::after{left:-20px;top:8px;width:4px;height:4px}
@@ -517,7 +510,7 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:40px 80px;display:flex
   .cert-card{flex:0 0 230px}
   .focus-card{flex:0 0 230px}
   .timeline{padding-left:20px}
-  .timeline::before{left:1px}
+  .timeline::before{left:1px;top:8px;bottom:8px}
   .tl-item::before{left:-18px;width:8px;height:8px}
   .tl-item::after{left:-17px;top:7px;width:3px;height:3px}
   .tl-title{font-size:14px}
@@ -1158,7 +1151,7 @@ function populateAbout(){
   if(stats){
     stats.innerHTML='<div class="about-stat"><div class="about-stat-num">'+(a.stat1||'')+'</div><div class="about-stat-label">Projects</div></div>'
       +'<div class="about-stat"><div class="about-stat-num">'+(a.stat2||'')+'</div><div class="about-stat-label">Experience</div></div>'
-      +'<div class="about-stat"><div class="about-stat-num">'+(a.stat3||'')+'</div><div class="about-stat-label">Role</div></div>';
+      +'<div class="about-stat"><div class="about-stat-num">'+(a.stat3||'')+'</div><div class="about-stat-label">Internship</div></div>';
   }
 }
 
@@ -1357,15 +1350,6 @@ const revealObserver=new IntersectionObserver((entries)=>{
   });
 },{threshold:0.05,rootMargin:'0px 0px -20px 0px'});
 
-/* Timeline line animation observer */
-var tlObserver=new IntersectionObserver(function(entries){
-  entries.forEach(function(e){
-    if(e.isIntersecting){
-      e.target.classList.add('tl-animate');
-      tlObserver.unobserve(e.target);
-    }
-  });
-},{threshold:0.15});
 
 /* Section title shine animation observer */
 var titleObserver=new IntersectionObserver(function(entries){
@@ -1384,9 +1368,6 @@ function reobserve(){
       revealObserver.observe(el);
     }
   });
-  /* Observe timeline for line animation */
-  var tl=document.getElementById('plansTimeline');
-  if(tl&&!tl.classList.contains('tl-animate'))tlObserver.observe(tl);
   /* Observe section titles for shine animation */
   document.querySelectorAll('.section-title').forEach(function(t){
     if(!t.classList.contains('title-visible'))titleObserver.observe(t);

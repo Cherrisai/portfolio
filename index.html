@@ -344,6 +344,7 @@ try {
   }
 } catch(e) { console.log('Supabase not configured, using localStorage fallback'); }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
 
@@ -724,15 +725,15 @@ try {
       <div class="contact-form">
         <div class="form-group">
           <label class="form-label">Your Name</label>
-          <input type="text" class="form-input" placeholder="John Doe">
+          <input type="text" class="form-input" id="cfName" placeholder="John Doe">
         </div>
         <div class="form-group">
           <label class="form-label">Email Address</label>
-          <input type="email" class="form-input" placeholder="john@example.com">
+          <input type="email" class="form-input" id="cfEmail" placeholder="john@example.com">
         </div>
         <div class="form-group">
           <label class="form-label">Message</label>
-          <textarea class="form-input" placeholder="Tell me about your project..."></textarea>
+          <textarea class="form-input" id="cfMessage" placeholder="Tell me about your project..."></textarea>
         </div>
         <button class="btn-send" onclick="handleFormSubmit(this)">Send Message →</button>
       </div>
@@ -925,7 +926,8 @@ function populateHero(){
         var w=window.open('','_blank');
         if(!w){alert('Allow popups to view resume');return;}
         w.document.open();
-        w.document.write('<html><head><title>Resume</title><style>*{margin:0}body{background:#222}</style></head><body><object data="'+blobUrl+'" type="application/pdf" style="width:100%;height:100vh"><iframe src="'+blobUrl+'" style="width:100%;height:100vh;border:none"></iframe></object></body></html>');
+        w.document.write('<html><head><title>Resume</title><style>*{margin:0}body{background:#222}</style><script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head><body><object data="'+blobUrl+'" type="application/pdf" style="width:100%;height:100vh"><iframe src="'+blobUrl+'" style="width:100%;height:100vh;border:none"></iframe></object></body></html>');
         w.document.close();
       };
     }
@@ -1123,9 +1125,38 @@ function populateContact(){
 }
 
 /* ─── FORM SUBMIT ─── */
-function handleFormSubmit(btn){
+async function handleFormSubmit(btn){
+  var name=document.getElementById('cfName').value.trim();
+  var email=document.getElementById('cfEmail').value.trim();
+  var message=document.getElementById('cfMessage').value.trim();
+  if(!name||!email||!message){alert('Please fill all fields');return;}
   btn.textContent='Sending...';btn.disabled=true;
-  setTimeout(()=>{btn.textContent='Message Sent! ✓';setTimeout(()=>{btn.textContent='Send Message →';btn.disabled=false;},2000);},1000);
+
+  // 1. Save to Supabase
+  if(sb){
+    try{
+      await sb.from('contact_messages').insert({name:name,email:email,message:message});
+      console.log('Message saved to Supabase');
+    }catch(e){console.log('Supabase msg error:',e);}
+  }
+
+  // 2. Send email via EmailJS
+  // Replace these 3 values after creating EmailJS account
+  var EMAILJS_KEY='wXI9M-3JpZKI6d2_n';
+  var EMAILJS_SERVICE='service_ejn015s';
+  var EMAILJS_TEMPLATE='template_3strzqb';
+  if(EMAILJS_KEY!=='YOUR_EMAILJS_PUBLIC_KEY'){
+    try{
+      await emailjs.send(EMAILJS_SERVICE,EMAILJS_TEMPLATE,{from_name:name,from_email:email,message:message},{publicKey:EMAILJS_KEY});
+      console.log('Email sent!');
+    }catch(e){console.log('Email error:',e);}
+  }
+
+  btn.textContent='Message Sent! ✓';
+  document.getElementById('cfName').value='';
+  document.getElementById('cfEmail').value='';
+  document.getElementById('cfMessage').value='';
+  setTimeout(function(){btn.textContent='Send Message →';btn.disabled=false;},3000);
 }
 
 

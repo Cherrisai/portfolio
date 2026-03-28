@@ -337,10 +337,10 @@ section{transition:transform .3s ease-out}
 // Replace these with your Supabase project credentials
 const SUPABASE_URL = 'https://tbxdnwpxwgkfvkfzorsc.supabase.co';       // e.g. https://abc123.supabase.co
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRieGRud3B4d2drZnZrZnpvcnNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NzM1NjMsImV4cCI6MjA5MDI0OTU2M30.PdyqsmakAW5kqTtcSJrzKw_xPwscVNjgCuT4qHvl7Mk';  // Your anon/public key
-let supabase = null;
+var sb = null;
 try {
   if(SUPABASE_URL !== 'YOUR_SUPABASE_URL' && typeof window.supabase !== 'undefined') {
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   }
 } catch(e) { console.log('Supabase not configured, using localStorage fallback'); }
 </script>
@@ -831,9 +831,9 @@ for(var k in defaultData){if(!D[k])D[k]=defaultData[k];}
 
 // Load from Supabase (overwrites localStorage data with cloud data)
 async function loadFromSupabase(){
-  if(!supabase)return;
+  if(!sb)return;
   try{
-    var {data,error}=await supabase.from('portfolio_data').select('data').eq('id',1).single();
+    var {data,error}=await sb.from('portfolio_data').select('data').eq('id',1).single();
     if(data&&data.data){
       var cloud=data.data;
       for(var k in cloud)D[k]=cloud[k];

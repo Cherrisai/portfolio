@@ -232,8 +232,7 @@ try {
           Current Focus
           <span class="sn-badge" id="badgeFocus">0</span>
         </button>
-        <button class="sn" data-tab="messages" onclick="switchTab(this)">📩 Messages <span class="badge" id="badgeMessages">0</span></button>
-      <button class="sn" data-tab="contact" onclick="switchTab(this)">
+        <button class="sn" data-tab="contact" onclick="switchTab(this)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
           Contact
         </button>
@@ -568,19 +567,6 @@ try {
         </div>
       </div>
 
-
-      <!-- MESSAGES -->
-      <div class="tab-panel" id="tab-messages">
-        <div class="page-head"><h2>Contact Messages</h2><p>Messages from your portfolio visitors</p></div>
-        <div class="card">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <h3>Inbox</h3>
-            <button class="btn-add" onclick="loadMessages()" style="padding:6px 16px;font-size:12px">↻ Refresh</button>
-          </div>
-          <div id="messagesList"><div class="empty"><p>Loading messages...</p></div></div>
-        </div>
-      </div>
-
       <!-- SETTINGS -->
       <div class="tab-panel" id="tab-settings">
         <div class="page-head"><h2>Settings</h2><p>Admin credentials and data management</p></div>
@@ -752,7 +738,7 @@ function doLogin(){
     sessionStorage.setItem('adminLogged','1');
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('dashboard').classList.add('visible');
-    loadFormValues();renderAll();loadMessages();
+    loadFormValues();renderAll();
   }else{
     document.getElementById('loginErr').style.display='block';
     document.getElementById('loginP').value='';
@@ -769,7 +755,7 @@ function doLogout(){
 if(sessionStorage.getItem('adminLogged')==='1'){
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('dashboard').classList.add('visible');
-  setTimeout(function(){loadFormValues();renderAll();loadMessages();},100);
+  setTimeout(function(){loadFormValues();renderAll();},100);
 }
 
 /* ─── TABS ─── */
@@ -1268,36 +1254,6 @@ async function handleResumeUpload(input){
   reader.readAsDataURL(file);
 }
 
-/* ─── MESSAGES ─── */
-async function loadMessages(){
-  var el=document.getElementById('messagesList');
-  if(!el)return;
-  if(!sb){el.innerHTML='<div class="empty"><p>Connect Supabase to receive messages.</p></div>';return;}
-  try{
-    var {data,error}=await sb.from('contact_messages').select('*').order('created_at',{ascending:false});
-    if(error)throw error;
-    if(!data||!data.length){el.innerHTML='<div class="empty"><p>No messages yet.</p></div>';return;}
-    var badge=document.getElementById('badgeMessages');if(badge)badge.textContent=data.length;
-    el.innerHTML=data.map(function(m,i){
-      var d=new Date(m.created_at);
-      var time=d.toLocaleDateString()+' '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-      return '<div class="row" style="margin-bottom:12px;padding:16px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:12px">'
-        +'<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px">'
-        +'<div><strong style="color:#fff;font-size:14px">'+m.name+'</strong><span style="color:var(--ac);font-size:12px;margin-left:10px">'+m.email+'</span></div>'
-        +'<div style="display:flex;gap:8px;align-items:center"><span style="color:var(--t3);font-size:11px">'+time+'</span>'
-        +'<button onclick="deleteMessage('+m.id+')" style="background:rgba(255,59,48,.1);color:#ff3b30;border:1px solid rgba(255,59,48,.2);padding:3px 10px;border-radius:8px;font-size:11px;cursor:pointer">Delete</button></div>'
-        +'</div>'
-        +'<div style="color:var(--t2);font-size:13px;line-height:1.6">'+m.message+'</div>'
-        +'</div>';
-    }).join('');
-  }catch(e){el.innerHTML='<div class="empty"><p>Error loading messages.</p></div>';console.error(e);}
-}
-async function deleteMessage(id){
-  if(!confirm('Delete this message?'))return;
-  if(sb){try{await sb.from('contact_messages').delete().eq('id',id);}catch(e){}}
-  loadMessages();
-}
-
 buildIconPicker();
 document.getElementById('loginU').focus();
 
@@ -1310,7 +1266,7 @@ async function loadCloudData(){
       var cloud=data.data;
       for(var k in cloud)D[k]=cloud[k];
       localStorage.setItem('pfData',JSON.stringify(D));
-      loadFormValues();renderAll();loadMessages();
+      loadFormValues();renderAll();
       console.log('Admin loaded cloud data');
     }
   }catch(e){console.log('Cloud load:',e);}

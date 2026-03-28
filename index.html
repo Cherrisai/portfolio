@@ -296,18 +296,43 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:40px 80px;display:flex
 
 /* ─── RESPONSIVE ─── */
 @media(max-width:900px){
-  .hero{grid-template-columns:1fr;padding:100px 24px 60px;text-align:center}
-  .hero-btns,.hero-socials{justify-content:center}
+  .hero{grid-template-columns:1fr;padding:100px 20px 60px;text-align:center}
+  .hero-btns{justify-content:center;flex-direction:column;align-items:center;gap:10px}
+  .hero-btns a{width:100%;max-width:280px;text-align:center;justify-content:center}
+  .hero-socials{justify-content:center}
   .hero-bio{margin:0 auto 36px}
-  .hero-right{order:-1;max-width:320px;margin:0 auto}
-  .about-grid,.contact-grid{grid-template-columns:1fr;gap:40px}
+  .hero-name{font-size:clamp(28px,8vw,48px);white-space:normal}
+  .hero-right{order:-1;max-width:280px;margin:0 auto}
+  .about-grid,.contact-grid{grid-template-columns:1fr;gap:30px}
+  .about-stats{grid-template-columns:repeat(3,1fr);gap:10px}
+  .about-stat{padding:16px 10px}
+  .about-stat-num{font-size:22px}
   .projects-grid{grid-template-columns:1fr}
-  section{padding:70px 24px}
-  nav{padding:16px 24px}
+  .skills-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px}
+  .skills-cats{gap:8px}
+  .cat-btn{padding:6px 14px;font-size:11px}
+  .certs-grid{grid-template-columns:1fr}
+  .focus-grid{grid-template-columns:1fr}
+  section{padding:60px 20px}
+  nav{padding:14px 20px}
   .nav-links,.nav-cta{display:none}
   .hamburger{display:flex}
-  footer{padding:28px 24px}
-  .va-grid,.va-header{padding:24px}
+  .section-title{font-size:clamp(26px,7vw,42px)}
+  footer{padding:24px 20px;flex-direction:column;text-align:center;gap:12px}
+  .footer-links{flex-wrap:wrap;justify-content:center}
+  .va-grid{grid-template-columns:1fr;padding:20px}
+  .va-header{padding:16px 20px}
+  .contact-form{padding:24px 18px}
+  .proj-links{flex-wrap:wrap}
+}
+@media(max-width:480px){
+  .hero{padding:80px 16px 40px}
+  .hero-name{font-size:28px}
+  section{padding:50px 16px}
+  .about-stats{grid-template-columns:1fr}
+  .skills-grid{grid-template-columns:repeat(auto-fill,minmax(90px,1fr))}
+  .skill-card{padding:14px 10px}
+  .skill-icon{width:32px;height:32px}
 }
 
 /* ─── PARALLAX & 3D SCROLL EFFECTS ─── */
@@ -344,6 +369,7 @@ try {
   }
 } catch(e) { console.log('Supabase not configured, using localStorage fallback'); }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
 
@@ -724,15 +750,15 @@ try {
       <div class="contact-form">
         <div class="form-group">
           <label class="form-label">Your Name</label>
-          <input type="text" class="form-input" placeholder="John Doe">
+          <input type="text" class="form-input" id="cfName" placeholder="John Doe">
         </div>
         <div class="form-group">
           <label class="form-label">Email Address</label>
-          <input type="email" class="form-input" placeholder="john@example.com">
+          <input type="email" class="form-input" id="cfEmail" placeholder="john@example.com">
         </div>
         <div class="form-group">
           <label class="form-label">Message</label>
-          <textarea class="form-input" placeholder="Tell me about your project..."></textarea>
+          <textarea class="form-input" id="cfMessage" placeholder="Tell me about your project..."></textarea>
         </div>
         <button class="btn-send" onclick="handleFormSubmit(this)">Send Message →</button>
       </div>
@@ -922,11 +948,10 @@ function populateHero(){
         // For http URLs (Supabase), open directly - browser will show PDF
         if(resumeUrl.startsWith('http')){window.open(resumeUrl,'_blank');return;}
         // For blob/data URLs, open with embedded viewer
+        var pdfPage='<html><head><title>Resume</title><style>*{margin:0}body{background:#222}</style></head><body><object data="'+blobUrl+'" type="application/pdf" style="width:100%;height:100vh"><iframe src="'+blobUrl+'" style="width:100%;height:100vh;border:none"></iframe></object></body></html>';
         var w=window.open('','_blank');
         if(!w){alert('Allow popups to view resume');return;}
-        w.document.open();
-        w.document.write('<html><head><title>Resume</title><style>*{margin:0}body{background:#222}</style></head><body><object data="'+blobUrl+'" type="application/pdf" style="width:100%;height:100vh"><iframe src="'+blobUrl+'" style="width:100%;height:100vh;border:none"></iframe></object></body></html>');
-        w.document.close();
+        w.document.open();w.document.write(pdfPage);w.document.close();
       };
     }
   }else{
@@ -1123,9 +1148,17 @@ function populateContact(){
 }
 
 /* ─── FORM SUBMIT ─── */
-function handleFormSubmit(btn){
+async function handleFormSubmit(btn){
+  var n=document.getElementById('cfName').value.trim();
+  var e=document.getElementById('cfEmail').value.trim();
+  var m=document.getElementById('cfMessage').value.trim();
+  if(!n||!e||!m){alert('Please fill all fields');return;}
   btn.textContent='Sending...';btn.disabled=true;
-  setTimeout(()=>{btn.textContent='Message Sent! ✓';setTimeout(()=>{btn.textContent='Send Message →';btn.disabled=false;},2000);},1000);
+  if(sb){try{await sb.from('contact_messages').insert({name:n,email:e,message:m});}catch(x){}}
+  try{await emailjs.send('service_ejn015s','template_3strzqb',{from_name:n,from_email:e,message:m},{publicKey:'wXI9M-3JpZKI6d2_n'});}catch(x){}
+  btn.textContent='Message Sent!';
+  document.getElementById('cfName').value='';document.getElementById('cfEmail').value='';document.getElementById('cfMessage').value='';
+  setTimeout(function(){btn.textContent='Send Message';btn.disabled=false;},3000);
 }
 
 

@@ -41,21 +41,20 @@ nav.scrolled{background:rgba(0,0,0,.95);backdrop-filter:blur(20px);border-bottom
 /* ─── SECTIONS ─── */
 section{padding:100px 48px;max-width:1200px;margin:0 auto}
 .section-label{display:none}
-.section-title{font-family:'Syne',sans-serif;font-size:clamp(36px,5.5vw,60px);font-weight:800;line-height:1.08;margin-bottom:20px;color:#fff;background:linear-gradient(90deg,#fff 0%,var(--ac) 25%,var(--ac2) 50%,var(--ac3) 75%,#fff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:500% 100%;animation:none;letter-spacing:-1.5px}
-.section-title.title-visible{animation:titleShine 6s linear infinite}
+.section-title{font-family:'Syne',sans-serif;font-size:clamp(36px,5.5vw,60px);font-weight:800;line-height:1.08;margin-bottom:20px;color:#fff;background:linear-gradient(90deg,#fff 0%,var(--ac) 25%,var(--ac2) 50%,var(--ac3) 75%,#fff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:500% 100%;animation:titleShine 6s linear infinite;letter-spacing:-1.5px}
 @keyframes titleShine{0%{background-position:100% 50%}100%{background-position:-100% 50%}}
 .section-sub{font-size:13px;color:var(--t3);max-width:520px;line-height:1.6;letter-spacing:.2px}
 
 /* ─── REVEAL ANIMATION ─── */
-.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease}
 .reveal.visible{opacity:1;transform:translateY(0)}
-.reveal-left{opacity:0;transform:translateX(-40px);transition:opacity .8s ease,transform .8s ease}
+.reveal-left{opacity:0;transform:translateX(-30px);transition:opacity .6s ease,transform .6s ease}
 .reveal-left.visible{opacity:1;transform:translateX(0)}
-.reveal-right{opacity:0;transform:translateX(40px);transition:opacity .8s ease,transform .8s ease}
+.reveal-right{opacity:0;transform:translateX(30px);transition:opacity .6s ease,transform .6s ease}
 .reveal-right.visible{opacity:1;transform:translateX(0)}
-.reveal-zoom{opacity:0;transform:scale(.9);transition:opacity .8s ease,transform .8s ease}
+.reveal-zoom{opacity:0;transform:scale(.95);transition:opacity .6s ease,transform .6s ease}
 .reveal-zoom.visible{opacity:1;transform:scale(1)}
-.reveal-flip{opacity:0;transform:translateY(30px);transition:opacity .8s ease,transform .8s ease}
+.reveal-flip{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
 .reveal-flip.visible{opacity:1;transform:translateY(0)}
 
 
@@ -229,7 +228,7 @@ section{padding:100px 48px;max-width:1200px;margin:0 auto}
 
 /* ═════════ FUTURE PLANS ═════════ */
 .timeline{position:relative;padding-left:48px}
-.timeline::before{content:'';position:absolute;left:3px;top:14px;bottom:14px;width:2px;background:rgba(0,229,255,.12)}
+
 .tl-item{position:relative;opacity:1;transform:none}
 
 .tl-item{margin-bottom:52px}
@@ -361,7 +360,6 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:40px 80px;display:flex
 
   /* Timeline */
   .timeline{padding-left:32px}
-  .timeline::before{left:2px;top:12px;bottom:12px}
   .tl-item::before{left:-30px;width:12px;height:12px}
   .tl-item::after{left:-27px;top:11px;width:5px;height:5px}
   .tl-title{font-size:18px}
@@ -457,7 +455,6 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:40px 80px;display:flex
 
   /* Timeline / Future Plans - fix left cutoff */
   .timeline{padding-left:24px}
-  .timeline::before{left:1px;top:10px;bottom:10px}
   .tl-item{margin-bottom:30px;padding-left:0}
   .tl-item::before{left:-22px;width:10px;height:10px;top:5px}
   .tl-item::after{left:-20px;top:8px;width:4px;height:4px}
@@ -510,7 +507,6 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:40px 80px;display:flex
   .cert-card{flex:0 0 230px}
   .focus-card{flex:0 0 230px}
   .timeline{padding-left:20px}
-  .timeline::before{left:1px;top:8px;bottom:8px}
   .tl-item::before{left:-18px;width:8px;height:8px}
   .tl-item::after{left:-17px;top:7px;width:3px;height:3px}
   .tl-title{font-size:14px}
@@ -976,7 +972,7 @@ try {
 /* ─── LOAD DATA ─── */
 const defaultData = {
   homepage:{name:'Sai Vignesh',title:'Junior Data Scientist | ML Engineer',tagline:'Junior Data Scientist skilled in Machine Learning, Deep Learning, NLP, Generative AI, Python, LLM and cloud deployment. Passionate about building end-to-end AI solutions for real-world problems.',resume:'#',github:'https://github.com',linkedin:'https://linkedin.com',twitter:'#',email:'saivignesg7@gmail.com',huggingface:'https://huggingface.co',phone:'+91-6383560198'},
-  about:{heading:"Building End-to-End AI Solutions",para1:'Junior Data Scientist skilled in Machine Learning, Deep Learning, NLP, Generative AI, Python, LLM and cloud deployment. Passionate about building end-to-end AI solutions for real-world problems.',para2:'BE Computer Science from Vels Institute of Science, Technology & Advanced Studies, Chennai. Experience as Data Science Intern at AI Variant, Data Analyst Intern at Vcodez, and SAP Trainee at Hanon Hanhook.',tags:['Python','Machine Learning','Deep Learning','NLP','Generative AI','LLMs','TensorFlow','PyTorch','FastAPI','Docker','PySpark','Power BI'],stat1:'6+ Projects',stat2:'3 Internships',stat3:'1 Certification'},
+  about:{heading:"Building End-to-End AI Solutions",para1:'Junior Data Scientist skilled in Machine Learning, Deep Learning, NLP, Generative AI, Python, LLM and cloud deployment. Passionate about building end-to-end AI solutions for real-world problems.',para2:'BE Computer Science from Vels Institute of Science, Technology & Advanced Studies, Chennai. Experience as Data Science Intern at AI Variant, Data Analyst Intern at Vcodez, and SAP Trainee at Hanon Hanhook.',tags:['Python','Machine Learning','Deep Learning','NLP','Generative AI','LLMs','TensorFlow','PyTorch','FastAPI','Docker','PySpark','Power BI'],stat1:'15+',stat2:'1+ Exp',stat3:'2+'},
   skills:[
     {id:1,name:'Python',cat:'Programming',level:95,icon:'python',color:'#3776AB'},
     {id:2,name:'MySQL',cat:'Programming',level:85,icon:'mysql',color:'#4479A1'},
@@ -1351,15 +1347,6 @@ const revealObserver=new IntersectionObserver((entries)=>{
 },{threshold:0.05,rootMargin:'0px 0px -20px 0px'});
 
 
-/* Section title shine animation observer */
-var titleObserver=new IntersectionObserver(function(entries){
-  entries.forEach(function(e){
-    if(e.isIntersecting){
-      e.target.classList.add('title-visible');
-      titleObserver.unobserve(e.target);
-    }
-  });
-},{threshold:0.3});
 
 /* ─── INIT ─── */
 function reobserve(){
@@ -1368,10 +1355,7 @@ function reobserve(){
       revealObserver.observe(el);
     }
   });
-  /* Observe section titles for shine animation */
-  document.querySelectorAll('.section-title').forEach(function(t){
-    if(!t.classList.contains('title-visible'))titleObserver.observe(t);
-  });
+
 }
 function init(){
   populateHero();

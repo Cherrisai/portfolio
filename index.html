@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#000;
+  --t1:#fff;--t2:rgba(255,255,255,.7);--t3:rgba(255,255,255,.38);
+  --ac:#00e5ff;--ac2:#7c5cfc;--ac3:#ff6b3d;--ac4:#39ff14;
+  --card:rgba(255,255,255,.03);--cardb:rgba(255,255,255,.07);
+}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--t1);overflow-x:hidden;line-height:1.6}
+a{color:inherit;text-decoration:none}
+button{font-family:'Space Grotesk',sans-serif;cursor:pointer;border:none}
+img{max-width:100%}
+
+/* ─── NAV ─── */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:18px 48px;display:flex;align-items:center;justify-content:space-between;transition:background .4s}
+nav.scrolled{background:rgba(0,0,0,.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--ac);letter-spacing:-0.5px}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{font-size:13px;font-weight:600;color:var(--t2);transition:color .3s;letter-spacing:.5px}
+.nav-links a:hover{color:#fff}
+.nav-cta{padding:9px 22px;border:1px solid var(--ac);border-radius:100px;font-size:13px;font-weight:600;color:var(--ac);transition:all .3s}
+.nav-cta:hover{background:var(--ac);color:#000}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer}
+.hamburger span{width:22px;height:2px;background:#fff;border-radius:2px;transition:all .3s}
+
+/* ─── MOBILE NAV ─── */
+.mob-nav{position:fixed;inset:0;z-index:999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;transform:translateX(100%);transition:transform .4s cubic-bezier(.16,1,.3,1)}
+.mob-nav.open{transform:translateX(0)}
+.mob-nav a{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:var(--t2)}
+.mob-nav a:hover{color:var(--ac)}
+.mob-close{position:absolute;top:24px;right:24px;background:none;color:#fff;font-size:24px}
+
+/* ─── SECTIONS ─── */
+section{padding:100px 48px;max-width:1200px;margin:0 auto}
+.section-label{display:none}
+.section-title{font-family:'Syne',sans-serif;font-size:clamp(36px,5.5vw,60px);font-weight:800;line-height:1.08;margin-bottom:20px;color:#fff;background:linear-gradient(90deg,#fff 0%,var(--ac) 25%,var(--ac2) 50%,var(--ac3) 75%,#fff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:500% 100%;animation:titleShine 6s linear infinite;letter-spacing:-1.5px}
+@keyframes titleShine{0%{background-position:100% 50%}100%{background-position:-100% 50%}}
+.section-sub{font-size:13px;color:var(--t3);max-width:520px;line-height:1.6;letter-spacing:.2px}
+
+/* ─── REVEAL ANIMATION ─── */
+.reveal{opacity:0;transform:translateY(60px) scale(.96) rotateX(8deg);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1.2s cubic-bezier(.16,1,.3,1);transform-style:preserve-3d;will-change:transform,opacity}
+.reveal.visible{opacity:1;transform:translateY(0) scale(1) rotateX(0deg)}
+.reveal-left{opacity:0;transform:translateX(-80px) rotateY(12deg);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1.2s cubic-bezier(.16,1,.3,1)}
+.reveal-left.visible{opacity:1;transform:translateX(0) rotateY(0)}
+.reveal-right{opacity:0;transform:translateX(80px) rotateY(-12deg);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1.2s cubic-bezier(.16,1,.3,1)}
+.reveal-right.visible{opacity:1;transform:translateX(0) rotateY(0)}
+.reveal-zoom{opacity:0;transform:scale(.7) rotateX(15deg);transition:opacity 1.2s cubic-bezier(.16,1,.3,1),transform 1.4s cubic-bezier(.16,1,.3,1)}
+.reveal-zoom.visible{opacity:1;transform:scale(1) rotateX(0)}
+.reveal-flip{opacity:0;transform:perspective(800px) rotateY(25deg);transition:opacity 1s,transform 1.2s cubic-bezier(.16,1,.3,1)}
+.reveal-flip.visible{opacity:1;transform:perspective(800px) rotateY(0)}
+
+
+/* ═════════ HERO ═════════ */
+#home{padding-top:0;max-width:none;margin:0}
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:40px;padding:120px 80px 80px;max-width:1400px;margin:0 auto}
+.hero-left{z-index:2}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border:1px solid rgba(0,229,255,.2);border-radius:100px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--ac);text-transform:uppercase;margin-bottom:24px}
+.hero-badge::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--ac4);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.hero-name{font-family:'Syne',sans-serif;font-size:clamp(42px,6vw,80px);font-weight:800;line-height:1.0;letter-spacing:-2px;margin-bottom:8px;color:#fff;white-space:nowrap;overflow:hidden;border-right:3px solid var(--ac);animation:typeWriter 2s steps(20,end) forwards,blink .7s step-end infinite;width:0}
+.hero-name.typed{width:100%;animation:typeWriter 2s steps(20,end) forwards,blink .7s step-end infinite 2s}
+@keyframes typeWriter{from{width:0}to{width:100%}}
+@keyframes blink{0%,100%{border-color:var(--ac)}50%{border-color:transparent}}
+.hero-title{font-size:18px;color:var(--ac);font-weight:600;margin-bottom:20px;font-family:'JetBrains Mono',monospace}
+.hero-bio{font-size:17px;color:var(--t2);line-height:1.7;margin-bottom:36px;max-width:500px}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:40px}
+.btn-primary{padding:14px 30px;background:var(--ac);color:#000;font-weight:700;border-radius:100px;font-size:14px;transition:all .3s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,229,255,.25)}
+.btn-outline{padding:14px 30px;border:1px solid rgba(255,255,255,.2);color:#fff;font-weight:600;border-radius:100px;font-size:14px;transition:all .3s;display:inline-flex;align-items:center;gap:8px}
+.btn-outline:hover{border-color:rgba(255,255,255,.5);transform:translateY(-2px)}
+.hero-socials{display:flex;gap:16px}
+.social-link{width:46px;height:46px;border:1px solid rgba(255,255,255,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .5s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden}
+.social-link::before{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,var(--scolor,var(--ac)),transparent);opacity:0;transition:opacity .4s;transform:scale(1.5)}
+.social-link:hover{border-color:var(--scolor,var(--ac));transform:translateY(-5px) scale(1.1);box-shadow:0 12px 30px rgba(0,0,0,.4),0 0 20px color-mix(in srgb,var(--scolor,var(--ac)) 30%,transparent)}
+.social-link:hover::before{opacity:.15}
+.social-link svg{width:18px;height:18px;transition:transform .4s;position:relative;z-index:1}
+.social-link:hover svg{transform:scale(1.15) rotate(5deg)}
+
+/* ─── SVG ANIMATION SCENE ─── */
+.hero-right{display:flex;align-items:center;justify-content:center;position:relative}
+.scene-container{width:100%;max-width:540px;position:relative}
+.hero-svg{width:100%;height:auto;filter:drop-shadow(0 0 40px rgba(0,229,255,.1))}
+
+/* Room glow */
+.room-glow{animation:roomGlow 4s ease-in-out infinite alternate}
+@keyframes roomGlow{0%{opacity:.3}100%{opacity:.7}}
+
+/* Monitor screen flicker */
+.monitor-screen{animation:screenFlicker 8s ease-in-out infinite}
+@keyframes screenFlicker{0%,100%{opacity:1}95%{opacity:.95}97%{opacity:.7}99%{opacity:1}}
+
+/* Typing arm */
+.typing-arm{transform-origin:120px 200px;animation:typeArm 0.4s ease-in-out infinite alternate}
+@keyframes typeArm{0%{transform:rotate(-3deg) translateY(0)}100%{transform:rotate(3deg) translateY(-4px)}}
+
+/* Head nod */
+.person-head{animation:headNod 3s ease-in-out infinite}
+@keyframes headNod{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+
+/* Code lines scroll */
+.code-line{animation:codeScroll 3s linear infinite}
+.code-line:nth-child(2){animation-delay:.3s}
+.code-line:nth-child(3){animation-delay:.6s}
+.code-line:nth-child(4){animation-delay:.9s}
+.code-line:nth-child(5){animation-delay:1.2s}
+@keyframes codeScroll{0%{opacity:0;transform:translateY(8px)}10%{opacity:1;transform:translateY(0)}90%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-8px)}}
+
+/* Floating particles */
+.particle{animation:floatUp linear infinite}
+.particle:nth-child(1){animation-duration:6s;animation-delay:0s}
+.particle:nth-child(2){animation-duration:8s;animation-delay:2s}
+.particle:nth-child(3){animation-duration:7s;animation-delay:4s}
+@keyframes floatUp{0%{transform:translateY(0);opacity:0}10%{opacity:.6}90%{opacity:.3}100%{transform:translateY(-60px);opacity:0}}
+
+/* Orbit ring */
+.orbit-ring{transform-origin:center;animation:orbitSpin 12s linear infinite}
+.orbit-ring-2{animation:orbitSpin 18s linear infinite reverse}
+@keyframes orbitSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+/* Coffee steam */
+.steam{animation:steamRise 2.5s ease-in-out infinite}
+.steam:nth-child(2){animation-delay:.8s}
+@keyframes steamRise{0%{transform:translateY(0) scaleX(1);opacity:0}30%{opacity:.5}100%{transform:translateY(-20px) scaleX(1.5);opacity:0}}
+
+/* Cursor blink */
+.cursor-blink{animation:cursorBlink 1s step-end infinite}
+@keyframes cursorBlink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* Notification pop */
+.notif{animation:notifPop 4s ease-in-out infinite}
+@keyframes notifPop{0%,100%{transform:translateY(0);opacity:.8}50%{transform:translateY(-6px);opacity:1}}
+
+/* ═════════ ABOUT ═════════ */
+
+/* ═════════ ABOUT ═════════ */
+.about-section{max-width:1200px}
+.about-grid{display:grid;grid-template-columns:1fr;gap:16px;text-align:left}
+.about-text p{font-size:15px;color:var(--t2);line-height:1.8;margin-bottom:14px}
+.about-tags{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0}
+.about-tag{padding:7px 16px;border:1px solid rgba(255,255,255,.1);border-radius:100px;font-size:12px;color:var(--t2);font-family:'JetBrains Mono',monospace;transition:all .3s;cursor:default}
+.about-tag:hover{border-color:var(--ac);color:var(--ac);background:rgba(0,229,255,.05);transform:translateY(-2px)}
+.about-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}
+.about-stat{background:var(--card);border:1px solid var(--cardb);border-radius:16px;padding:22px 16px;text-align:center;transition:all .4s}
+.about-stat:hover{transform:translateY(-6px);border-color:rgba(0,229,255,.2);box-shadow:0 16px 40px rgba(0,0,0,.4)}
+.about-stat-num{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;background:linear-gradient(135deg,var(--ac),var(--ac2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.about-stat-label{font-size:11px;color:var(--t3);margin-top:4px;letter-spacing:1px;text-transform:uppercase}
+@media(max-width:768px){.about-stats{grid-template-columns:1fr}}
+
+/* ═════════ SKILLS ═════════ */
+.skills-cats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px}
+.cat-btn{padding:8px 20px;border:1px solid rgba(255,255,255,.1);border-radius:100px;font-size:12px;font-weight:600;color:var(--t3);cursor:pointer;transition:all .3s;background:transparent}
+.cat-btn.active,.cat-btn:hover{border-color:var(--ac);color:var(--ac);background:rgba(0,229,255,.06)}
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:14px}
+.skill-card{background:var(--card);border:1px solid var(--cardb);border-radius:16px;padding:20px 14px;text-align:center;transition:all .4s;cursor:default;position:relative;overflow:hidden}
+.skill-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,var(--skill-color,rgba(0,229,255,.1)),transparent 70%);opacity:0;transition:opacity .4s}
+.skill-card:hover{border-color:var(--skill-color,var(--ac));transform:translateY(-10px) rotateX(10deg) rotateY(6deg) scale(1.05);box-shadow:0 24px 50px rgba(0,0,0,.6),0 0 20px var(--skill-color,rgba(0,229,255,.1))}
+.skill-card:hover::before{opacity:1}
+.skill-icon{width:40px;height:40px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;transition:transform .4s}
+.skill-card:hover .skill-icon{transform:scale(1.2) rotate(5deg)}
+.skill-icon svg{width:100%;height:100%}
+.skill-name{font-size:12px;font-weight:700;color:#fff;display:block;margin-bottom:6px}
+.skill-bar-wrap{height:3px;background:rgba(255,255,255,.06);border-radius:10px;overflow:hidden}
+.skill-bar{height:100%;border-radius:10px;width:0;transition:width 1.2s cubic-bezier(.16,1,.3,1)}
+.skill-cat-label{font-size:9px;color:var(--t3);margin-top:4px;font-family:'JetBrains Mono',monospace;letter-spacing:1px}
+
+/* ═════════ PROJECTS ═════════ */
+.projects-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:40px;flex-wrap:wrap;gap:16px}
+.view-all-btn{padding:10px 24px;border:1px solid rgba(255,255,255,.15);border-radius:100px;font-size:13px;font-weight:600;color:var(--t2);transition:all .3s;cursor:pointer;background:transparent}
+.view-all-btn:hover{border-color:var(--ac);color:var(--ac)}
+.projects-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.proj-card{background:var(--card);border:1px solid var(--cardb);border-radius:20px;overflow:hidden;transition:all .4s;cursor:pointer}
+.proj-card:hover{transform:translateY(-8px);border-color:rgba(255,255,255,.14);box-shadow:0 24px 60px rgba(0,0,0,.6)}
+.proj-banner{width:100%;height:auto;max-height:160px;overflow:hidden;background:linear-gradient(135deg,rgba(0,229,255,.04),rgba(124,92,252,.03))}
+.proj-banner img{width:100%;height:160px;object-fit:cover;display:block}
+.proj-banner:empty{display:none}
+.proj-banner.no-img{display:none}
+.proj-body{padding:22px}
+.proj-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);letter-spacing:3px;margin-bottom:8px}
+.proj-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:8px;color:#fff}
+.proj-desc{font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:14px}
+.proj-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.proj-tag{padding:3px 10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:100px;font-size:11px;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.proj-links{display:flex;gap:10px}
+.proj-link{padding:8px 18px;border:1px solid rgba(255,255,255,.1);border-radius:100px;font-size:12px;font-weight:600;color:var(--t2);transition:all .3s}
+.proj-link:hover{border-color:var(--ac);color:var(--ac);transform:translateY(-2px)}
+.proj-link svg{vertical-align:middle;margin-right:2px}
+.proj-link.primary{background:var(--ac);border-color:var(--ac);color:#000}
+.proj-link.primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,229,255,.2)}
+
+/* VIEW ALL PAGE */
+#viewAll{position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:#000;overflow-y:auto;visibility:hidden;opacity:0;transition:opacity .4s ease,visibility .4s;-webkit-overflow-scrolling:touch}
+#viewAll.open{visibility:visible;opacity:1}
+.va-header{padding:28px 48px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:rgba(0,0,0,.97);backdrop-filter:blur(20px);z-index:10}
+.va-back{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--t2);cursor:pointer;transition:color .3s}
+.va-back:hover{color:var(--ac)}
+.va-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800}
+.va-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;padding:40px 48px}
+.va-card{background:var(--card);border:1px solid var(--cardb);border-radius:20px;overflow:hidden;animation:vaCardIn .5s cubic-bezier(.16,1,.3,1) both}
+@keyframes vaCardIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.va-card:nth-child(1){animation-delay:0s}
+.va-card:nth-child(2){animation-delay:.08s}
+.va-card:nth-child(3){animation-delay:.16s}
+.va-card:nth-child(4){animation-delay:.24s}
+.va-card:nth-child(5){animation-delay:.32s}
+.va-card:nth-child(6){animation-delay:.4s}
+
+/* ═════════ CERTIFICATIONS ═════════ */
+.certs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+.cert-card{background:var(--card);border:1px solid var(--cardb);border-radius:20px;padding:24px;transition:all .4s;position:relative;overflow:hidden}
+
+.cert-card:hover{transform:translateY(-6px);border-color:rgba(255,255,255,.12)}
+
+.cert-img{width:60px;height:60px;object-fit:cover;border-radius:12px;margin-bottom:14px;background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.15);display:flex;align-items:center;justify-content:center;font-size:28px}
+.cert-card .cert-full-img{width:100%;border-radius:12px;margin-bottom:14px;max-height:200px;object-fit:cover;display:block}
+.cert-issuer{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ac);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px}
+.cert-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:4px;line-height:1.3}
+.cert-date{font-size:12px;color:var(--t3);margin-bottom:12px}
+.cert-desc{font-size:12px;color:var(--t2);line-height:1.5}
+.cert-link{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--ac);margin-top:10px;font-weight:600}
+
+/* ═════════ FUTURE PLANS ═════════ */
+.timeline{position:relative;padding-left:48px}
+
+.tl-item{position:relative;margin-bottom:52px}
+.tl-item::before{content:'';position:absolute;left:-44px;top:8px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid rgba(0,229,255,.3);transition:all .5s;z-index:2}
+.tl-item::after{content:'';position:absolute;left:-40px;top:12px;width:6px;height:6px;border-radius:50%;background:var(--ac);z-index:3;animation:dotGlow 2.5s ease infinite;box-shadow:0 0 6px rgba(0,229,255,.5)}
+@keyframes dotGlow{0%,100%{box-shadow:0 0 6px rgba(0,229,255,.5);opacity:1}50%{box-shadow:0 0 16px rgba(0,229,255,.8),0 0 30px rgba(0,229,255,.3);opacity:.7}}
+.tl-item:hover::before{border-color:var(--ac);box-shadow:0 0 20px rgba(0,229,255,.3);transform:scale(1.15)}
+.tl-item:hover::after{background:var(--ac2);box-shadow:0 0 12px rgba(124,92,252,.6)}
+.tl-year{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ac);letter-spacing:3px;margin-bottom:6px}
+.tl-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff;margin-bottom:8px}
+.tl-desc{font-size:15px;color:var(--t2);line-height:1.6;max-width:560px}
+.tl-img{width:100%;max-width:400px;height:160px;object-fit:cover;border-radius:14px;margin-top:14px;display:block}
+.tl-img.placeholder{background:rgba(255,255,255,.02);display:flex;align-items:center;justify-content:center;font-size:28px;width:200px;height:120px}
+
+/* ═════════ FOCUS ═════════ */
+.focus-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.focus-card{background:var(--card);border:1px solid var(--cardb);border-radius:20px;padding:24px;transition:all .5s;position:relative;overflow:hidden}
+
+.focus-card:hover{transform:translateY(-8px);border-color:rgba(0,229,255,.15);box-shadow:0 24px 60px rgba(0,0,0,.5),0 0 1px rgba(0,229,255,.2)}
+.focus-img{width:100%;height:140px;object-fit:cover;border-radius:12px;margin-bottom:16px}
+.focus-status{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ac4);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.focus-status::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--ac4);animation:pulse 2s infinite}
+.focus-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;margin-bottom:8px}
+.focus-desc{font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:16px}
+.progress-wrap{height:5px;background:rgba(255,255,255,.06);border-radius:10px;overflow:hidden;position:relative}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2));border-radius:10px;width:0;transition:width 1.5s cubic-bezier(.16,1,.3,1);position:relative;box-shadow:0 0 8px rgba(0,229,255,.3)}
+.progress-bar::after{content:'';position:absolute;right:0;top:-3px;width:11px;height:11px;border-radius:50%;background:var(--ac);box-shadow:0 0 12px rgba(0,229,255,.5),0 0 24px rgba(0,229,255,.2);transition:opacity .5s .8s;opacity:0}
+.progress-bar[style*="width"]:not([style*="width: 0"])::after,.progress-bar[style*="width:"]:not([style*="width:0"])::after{opacity:1}
+.progress-label{display:flex;justify-content:space-between;font-size:11px;color:var(--t3);margin-top:6px;font-family:'JetBrains Mono',monospace}
+
+/* ═════════ CONTACT ═════════ */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+.contact-info h2{font-family:'Syne',sans-serif;font-size:clamp(28px,4vw,44px);font-weight:800;color:#fff;line-height:1.1;margin-bottom:16px}
+.contact-info p{font-size:16px;color:var(--t2);line-height:1.7;margin-bottom:32px}
+.contact-items{display:flex;flex-direction:column;gap:16px}
+.contact-item{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--card);border:1px solid var(--cardb);border-radius:14px;transition:all .3s}
+.contact-item:hover{border-color:rgba(255,255,255,.12);transform:translateX(6px)}
+.ci-icon{width:36px;height:36px;border-radius:10px;background:rgba(0,229,255,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ci-icon svg{width:16px;height:16px;color:var(--ac)}
+.ci-label{font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace;letter-spacing:2px;margin-bottom:2px}
+.ci-value{font-size:14px;font-weight:600;color:#fff}
+.contact-form{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);border-radius:24px;padding:36px}
+.form-group{margin-bottom:16px}
+.form-label{font-size:12px;font-weight:600;color:var(--t2);letter-spacing:.5px;margin-bottom:6px;display:block}
+.form-input{width:100%;padding:13px 18px;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.08);border-radius:10px;color:#fff;font-family:'Space Grotesk',sans-serif;font-size:14px;outline:none;transition:border-color .3s}
+.form-input:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(0,229,255,.06)}
+.form-input::placeholder{color:rgba(255,255,255,.25)}
+textarea.form-input{height:120px;resize:vertical}
+.btn-send{width:100%;padding:14px;background:var(--ac);color:#000;font-weight:700;font-size:14px;border-radius:100px;cursor:pointer;transition:all .3s;font-family:'Syne',sans-serif;margin-top:4px}
+.btn-send:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,229,255,.25)}
+
+/* FOOTER */
+footer{border-top:1px solid rgba(255,255,255,.06);padding:40px 80px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.footer-name{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--ac)}
+.footer-copy{font-size:13px;color:var(--t3)}
+.footer-links{display:flex;gap:20px}
+.footer-links a{font-size:13px;color:var(--t3);transition:color .3s}
+.footer-links a:hover{color:#fff}
+
+/* SCROLL TO TOP */
+#scrollTop{position:fixed;bottom:28px;right:28px;width:42px;height:42px;border-radius:50%;background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.2);color:var(--ac);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;opacity:0;pointer-events:none;z-index:500}
+#scrollTop.visible{opacity:1;pointer-events:auto}
+#scrollTop:hover{background:rgba(0,229,255,.2);transform:translateY(-3px)}
+
+/* DIVIDER */
+
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;padding:100px 24px 60px;text-align:center}
+  .hero-btns,.hero-socials{justify-content:center}
+  .hero-bio{margin:0 auto 36px}
+  .hero-right{order:-1;max-width:320px;margin:0 auto}
+  .about-grid,.contact-grid{grid-template-columns:1fr;gap:40px}
+  .projects-grid{grid-template-columns:1fr}
+  section{padding:70px 24px}
+  nav{padding:16px 24px}
+  .nav-links,.nav-cta{display:none}
+  .hamburger{display:flex}
+  footer{padding:28px 24px}
+  .va-grid,.va-header{padding:24px}
+}
+
+/* ─── PARALLAX & 3D SCROLL EFFECTS ─── */
+section{transition:transform .3s ease-out}
+.divider{width:100%;height:2px;position:relative;overflow:hidden;margin:0 auto;background:linear-gradient(90deg,transparent,rgba(255,255,255,.03) 30%,rgba(255,255,255,.03) 70%,transparent)}
+.divider::before{content:'';position:absolute;top:0;left:-30%;width:20%;height:100%;background:linear-gradient(90deg,transparent,var(--ac),var(--ac2),transparent);animation:divFlow1 3s linear infinite;box-shadow:0 0 15px rgba(0,229,255,.4),0 0 30px rgba(0,229,255,.15)}
+.divider::after{content:'';position:absolute;top:0;left:-60%;width:15%;height:100%;background:linear-gradient(90deg,transparent,var(--ac2),var(--ac3),transparent);animation:divFlow2 4.5s linear infinite;animation-delay:1.5s;box-shadow:0 0 15px rgba(124,92,252,.3)}
+@keyframes divFlow1{0%{left:-20%}100%{left:100%}}
+@keyframes divFlow2{0%{left:-15%}100%{left:100%}}
+
+/* Enhanced card hover across all sections */
+.focus-card:hover,.tl-item:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 24px 60px rgba(0,0,0,.5),0 0 1px rgba(0,229,255,.15)}
+.stat-box:hover{transform:translateY(-6px) scale(1.04);box-shadow:0 16px 40px rgba(0,0,0,.4);border-color:rgba(0,229,255,.2)}
+.tag:hover{transform:translateY(-3px) scale(1.05)}
+
+/* Stagger delays for children */
+.skills-grid .skill-card:nth-child(1){transition-delay:0s}
+.skills-grid .skill-card:nth-child(2){transition-delay:.05s}
+.skills-grid .skill-card:nth-child(3){transition-delay:.1s}
+.skills-grid .skill-card:nth-child(4){transition-delay:.15s}
+.skills-grid .skill-card:nth-child(5){transition-delay:.2s}
+.skills-grid .skill-card:nth-child(6){transition-delay:.25s}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ═══════ SUPABASE CONFIG ═══════
+// Replace these with your Supabase project credentials
+const SUPABASE_URL = 'https://tbxdnwpxwgkfvkfzorsc.supabase.co';       // e.g. https://abc123.supabase.co
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRieGRud3B4d2drZnZrZnpvcnNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NzM1NjMsImV4cCI6MjA5MDI0OTU2M30.PdyqsmakAW5kqTtcSJrzKw_xPwscVNjgCuT4qHvl7Mk';  // Your anon/public key
+let supabase = null;
+try {
+  if(SUPABASE_URL !== 'YOUR_SUPABASE_URL' && typeof window.supabase !== 'undefined') {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  }
+} catch(e) { console.log('Supabase not configured, using localStorage fallback'); }
+</script>
+</head>
+<body>
+
+<!-- ═══════ NAV ═══════ -->
+<nav id="mainNav">
+  <a href="#home" class="nav-logo" id="navLogo">Portfolio</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#certs">Certs</a></li>
+    <li><a href="#plans">Plans</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Hire Me</a>
+  <div class="hamburger" onclick="toggleMobNav()"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="mob-nav" id="mobNav">
+  <button class="mob-close" onclick="toggleMobNav()">✕</button>
+  <a href="#about" onclick="toggleMobNav()">About</a>
+  <a href="#skills" onclick="toggleMobNav()">Skills</a>
+  <a href="#projects" onclick="toggleMobNav()">Projects</a>
+  <a href="#certs" onclick="toggleMobNav()">Certs</a>
+  <a href="#plans" onclick="toggleMobNav()">Plans</a>
+  <a href="#focus" onclick="toggleMobNav()">Focus</a>
+  <a href="#contact" onclick="toggleMobNav()">Contact</a>
+</div>
+
+<!-- ═══════ HERO ═══════ -->
+<section id="home">
+<div class="hero">
+  <div class="hero-left reveal">
+    <div class="hero-badge">Available for Work</div>
+    <h1 class="hero-name" id="heroName">Your Name</h1>
+    <div class="hero-title" id="heroTitle">AI Engineer & Developer</div>
+    <p class="hero-bio" id="heroBio">Building intelligent systems that bridge research and production.</p>
+    <div class="hero-btns">
+      <a href="#" class="btn-primary" id="heroResume" download>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        Download Resume
+      </a>
+      <a href="#" class="btn-outline" id="heroViewResume" target="_blank">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        View Resume
+      </a>
+      <a href="#projects" class="btn-outline">View Projects</a>
+    </div>
+    <div class="hero-socials" id="heroSocials">
+      <a href="#" class="social-link" id="socialGithub" title="GitHub" style="--scolor:#fff">
+        <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      </a>
+      <a href="#" class="social-link" id="socialLinkedin" title="LinkedIn" style="--scolor:#0A66C2">
+        <svg viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </a>
+      <a href="#" class="social-link" id="socialHuggingface" title="HuggingFace" style="--scolor:#FFD21E">
+        <svg viewBox="0 0 24 24" fill="#FFD21E"><circle cx="12" cy="12" r="10" fill="none" stroke="#FFD21E" stroke-width="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><path d="M8 15c1 2 3 3 4 3s3-1 4-3" fill="none" stroke="#FFD21E" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </a>
+      <a href="#" class="social-link" id="socialEmail" title="Email" style="--scolor:#EA4335">
+        <svg viewBox="0 0 24 24" fill="#EA4335"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-right reveal" style="transition-delay:.2s">
+    <div class="scene-container">
+      <!-- Animated SVG Scene: Person working at computer in dark room -->
+      <svg class="hero-svg" viewBox="0 0 540 480" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="roomGrad" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.04"/>
+            <stop offset="100%" stop-color="#000" stop-opacity="1"/>
+          </radialGradient>
+          <radialGradient id="screenGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.15"/>
+            <stop offset="100%" stop-color="#7c5cfc" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="lampGlow" cx="50%" cy="0%" r="80%">
+            <stop offset="0%" stop-color="#ffeaa7" stop-opacity="0.25"/>
+            <stop offset="100%" stop-color="transparent"/>
+          </radialGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="softGlow">
+            <feGaussianBlur stdDeviation="8" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <clipPath id="screenClip">
+            <rect x="170" y="90" width="200" height="130" rx="4"/>
+          </clipPath>
+        </defs>
+
+        <!-- Room background -->
+        <rect width="540" height="480" fill="#000"/>
+        <rect width="540" height="480" fill="url(#roomGrad)" class="room-glow"/>
+
+        <!-- Floor -->
+        <ellipse cx="270" cy="430" rx="220" ry="30" fill="rgba(0,229,255,0.03)"/>
+
+        <!-- Desk surface -->
+        <rect x="100" y="280" width="340" height="16" rx="3" fill="#1a1a2e" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+        <rect x="108" y="296" width="12" height="80" rx="2" fill="#111"/>
+        <rect x="420" y="296" width="12" height="80" rx="2" fill="#111"/>
+
+        <!-- Monitor base -->
+        <rect x="248" y="276" width="44" height="8" rx="4" fill="#222" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+        <rect x="263" y="230" width="14" height="50" rx="2" fill="#1a1a1a"/>
+
+        <!-- Monitor frame -->
+        <rect x="150" y="80" width="240" height="155" rx="10" fill="#0d0d1a" stroke="rgba(0,229,255,0.3)" stroke-width="1.5"/>
+        <rect x="155" y="85" width="230" height="145" rx="7" fill="#050508"/>
+
+        <!-- Screen glow behind -->
+        <ellipse cx="270" cy="160" rx="130" ry="80" fill="url(#screenGlow)" opacity="0.8" class="monitor-screen"/>
+
+        <!-- Screen content -->
+        <rect x="160" y="90" width="220" height="135" rx="5" fill="#020208" clip-path="url(#screenClip)"/>
+
+        <!-- Code on screen -->
+        <g clip-path="url(#screenClip)">
+          <!-- Window chrome -->
+          <rect x="160" y="90" width="220" height="18" fill="#0d0d1a"/>
+          <circle cx="173" cy="99" r="4" fill="#ff5f57" opacity="0.8"/>
+          <circle cx="185" cy="99" r="4" fill="#febc2e" opacity="0.8"/>
+          <circle cx="197" cy="99" r="4" fill="#28c840" opacity="0.8"/>
+
+          <!-- Code lines -->
+          <g class="code-line" style="animation-delay:0s">
+            <rect x="168" y="114" width="20" height="3" rx="1.5" fill="#7c5cfc" opacity="0.9"/>
+            <rect x="194" y="114" width="45" height="3" rx="1.5" fill="#00e5ff" opacity="0.9"/>
+            <rect x="244" y="114" width="30" height="3" rx="1.5" fill="#ff6b3d" opacity="0.7"/>
+          </g>
+          <g class="code-line" style="animation-delay:0.3s">
+            <rect x="176" y="122" width="55" height="3" rx="1.5" fill="#39ff14" opacity="0.8"/>
+            <rect x="236" y="122" width="25" height="3" rx="1.5" fill="#fff" opacity="0.4"/>
+          </g>
+          <g class="code-line" style="animation-delay:0.6s">
+            <rect x="176" y="130" width="30" height="3" rx="1.5" fill="#00e5ff" opacity="0.7"/>
+            <rect x="211" y="130" width="50" height="3" rx="1.5" fill="#ffeaa7" opacity="0.6"/>
+          </g>
+          <g class="code-line" style="animation-delay:0.9s">
+            <rect x="168" y="138" width="15" height="3" rx="1.5" fill="#7c5cfc" opacity="0.9"/>
+            <rect x="188" y="138" width="40" height="3" rx="1.5" fill="#ff6b3d" opacity="0.7"/>
+          </g>
+          <g class="code-line" style="animation-delay:1.2s">
+            <rect x="176" y="146" width="65" height="3" rx="1.5" fill="#39ff14" opacity="0.6"/>
+          </g>
+          <g class="code-line" style="animation-delay:1.5s">
+            <rect x="168" y="154" width="85" height="3" rx="1.5" fill="#00e5ff" opacity="0.5"/>
+          </g>
+          <!-- Cursor blink -->
+          <rect x="175" y="162" width="8" height="3" rx="1" class="cursor-blink" fill="#00e5ff"/>
+          <!-- Terminal prompt -->
+          <rect x="168" y="170" width="15" height="3" rx="1.5" fill="#39ff14" opacity="0.8"/>
+          <rect x="188" y="170" width="50" height="3" rx="1.5" fill="#fff" opacity="0.5"/>
+        </g>
+
+        <!-- Screen border glow -->
+        <rect x="155" y="85" width="230" height="145" rx="7" fill="none" stroke="rgba(0,229,255,0.15)" stroke-width="1"/>
+
+        <!-- Keyboard -->
+        <rect x="185" y="285" width="170" height="15" rx="4" fill="#111" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+        <!-- Keys -->
+        <g fill="rgba(255,255,255,0.12)">
+          <rect x="190" y="288" width="8" height="5" rx="1"/>
+          <rect x="201" y="288" width="8" height="5" rx="1"/>
+          <rect x="212" y="288" width="8" height="5" rx="1"/>
+          <rect x="223" y="288" width="8" height="5" rx="1"/>
+          <rect x="234" y="288" width="8" height="5" rx="1"/>
+          <rect x="245" y="288" width="8" height="5" rx="1"/>
+          <rect x="256" y="288" width="8" height="5" rx="1"/>
+          <rect x="267" y="288" width="8" height="5" rx="1"/>
+          <rect x="278" y="288" width="8" height="5" rx="1"/>
+          <rect x="289" y="288" width="8" height="5" rx="1"/>
+          <rect x="300" y="288" width="8" height="5" rx="1"/>
+          <rect x="311" y="288" width="8" height="5" rx="1"/>
+          <rect x="322" y="288" width="8" height="5" rx="1"/>
+          <rect x="196" y="295" width="48" height="5" rx="1" fill="rgba(0,229,255,0.25)"/><!-- space -->
+        </g>
+
+        <!-- Mouse -->
+        <rect x="370" y="285" width="18" height="25" rx="9" fill="#111" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+        <line x1="379" y1="285" x2="379" y2="300" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+
+        <!-- Coffee mug -->
+        <rect x="120" y="265" width="24" height="20" rx="3" fill="#1a1a2e" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+        <path d="M144 272 Q155 272 155 278 Q155 284 144 284" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+        <!-- Steam -->
+        <path class="steam" d="M128 264 Q130 258 128 252" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-linecap="round"/>
+        <path class="steam" d="M135 264 Q137 256 135 250" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" stroke-linecap="round"/>
+
+        <!-- Desk lamp -->
+        <line x1="410" y1="280" x2="410" y2="240" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+        <line x1="410" y1="240" x2="390" y2="210" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+        <ellipse cx="385" cy="207" rx="18" ry="10" fill="#222" stroke="rgba(255,200,0,0.3)" stroke-width="1"/>
+        <!-- Lamp glow -->
+        <ellipse cx="385" cy="240" rx="50" ry="40" fill="url(#lampGlow)"/>
+
+        <!-- PERSON / CHARACTER -->
+        <!-- Chair -->
+        <rect x="220" y="340" width="100" height="8" rx="4" fill="#1a1a1a" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+        <rect x="235" y="348" width="70" height="60" rx="4" fill="#111"/>
+        <rect x="220" y="348" width="10" height="50" rx="3" fill="#0d0d0d"/>
+        <rect x="310" y="348" width="10" height="50" rx="3" fill="#0d0d0d"/>
+        <rect x="220" y="395" width="100" height="6" rx="3" fill="#0d0d0d"/>
+
+        <!-- Body / torso -->
+        <rect x="237" y="310" width="66" height="35" rx="12" fill="#1e1e3a"/>
+        <!-- Hoodie detail -->
+        <path d="M270 310 L260 325 L280 325 Z" fill="rgba(255,255,255,0.05)"/>
+
+        <!-- Left arm (resting) -->
+        <rect x="218" y="315" width="22" height="14" rx="7" fill="#2a2a4a" transform="rotate(-15 229 322)"/>
+        <!-- Right arm (typing) -->
+        <g class="typing-arm">
+          <rect x="300" y="305" width="22" height="14" rx="7" fill="#2a2a4a" transform="rotate(20 311 312)"/>
+          <rect x="310" y="315" width="18" height="10" rx="5" fill="#2a2a3a"/>
+        </g>
+
+        <!-- Neck -->
+        <rect x="262" y="298" width="16" height="16" rx="6" fill="#c8956c"/>
+
+        <!-- Head -->
+        <g class="person-head">
+          <ellipse cx="270" cy="285" rx="24" ry="26" fill="#d4a574"/>
+          <!-- Hair -->
+          <path d="M246 278 Q248 255 270 255 Q292 255 294 278" fill="#2c1810"/>
+          <path d="M246 278 Q244 268 248 262" fill="#2c1810"/>
+          <path d="M294 278 Q296 268 292 262" fill="#2c1810"/>
+          <!-- Eyes (looking at screen) -->
+          <ellipse cx="261" cy="280" rx="3.5" ry="4" fill="#fff"/>
+          <ellipse cx="279" cy="280" rx="3.5" ry="4" fill="#fff"/>
+          <circle cx="262" cy="281" r="2.5" fill="#1a1a2e"/>
+          <circle cx="280" cy="281" r="2.5" fill="#1a1a2e"/>
+          <circle cx="263" cy="280" r="1" fill="#fff"/>
+          <circle cx="281" cy="280" r="1" fill="#fff"/>
+          <!-- Glasses -->
+          <rect x="255" y="276" width="13" height="10" rx="3" fill="none" stroke="rgba(0,229,255,0.6)" stroke-width="1.2"/>
+          <rect x="272" y="276" width="13" height="10" rx="3" fill="none" stroke="rgba(0,229,255,0.6)" stroke-width="1.2"/>
+          <line x1="268" y1="281" x2="272" y2="281" stroke="rgba(0,229,255,0.6)" stroke-width="1"/>
+          <line x1="255" y1="281" x2="252" y2="280" stroke="rgba(0,229,255,0.5)" stroke-width="1"/>
+          <line x1="285" y1="281" x2="288" y2="280" stroke="rgba(0,229,255,0.5)" stroke-width="1"/>
+          <!-- Mouth (slight smile) -->
+          <path d="M264 292 Q270 296 276 292" fill="none" stroke="rgba(0,0,0,0.4)" stroke-width="1.5" stroke-linecap="round"/>
+        </g>
+
+        <!-- Headphones -->
+        <path d="M247 278 Q247 258 270 256 Q293 258 293 278" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+        <rect x="243" y="276" width="8" height="12" rx="4" fill="#222" stroke="rgba(0,229,255,0.3)" stroke-width="1"/>
+        <rect x="289" y="276" width="8" height="12" rx="4" fill="#222" stroke="rgba(0,229,255,0.3)" stroke-width="1"/>
+
+        <!-- Notification pop on screen -->
+        <g class="notif" filter="url(#glow)">
+          <rect x="300" y="120" width="90" height="36" rx="8" fill="rgba(0,229,255,0.08)" stroke="rgba(0,229,255,0.25)" stroke-width="1"/>
+          <circle cx="314" cy="138" r="6" fill="rgba(57,255,20,0.15)" stroke="#39ff14" stroke-width="1"/>
+          <rect x="326" y="130" width="50" height="4" rx="2" fill="rgba(255,255,255,0.4)"/>
+          <rect x="326" y="138" width="36" height="3" rx="1.5" fill="rgba(0,229,255,0.6)"/>
+        </g>
+
+        <!-- Floating particles around monitor -->
+        <g>
+          <circle class="particle" cx="155" cy="140" r="2" fill="rgba(0,229,255,0.5)" filter="url(#glow)"/>
+          <circle class="particle" cx="390" cy="160" r="1.5" fill="rgba(124,92,252,0.6)" filter="url(#glow)"/>
+          <circle class="particle" cx="160" cy="200" r="1" fill="rgba(57,255,20,0.4)" filter="url(#glow)"/>
+        </g>
+
+        <!-- Orbit ring around workspace -->
+        <g transform="translate(270,180)">
+          <ellipse class="orbit-ring" cx="0" cy="0" rx="160" ry="50" fill="none" stroke="rgba(0,229,255,0.06)" stroke-width="1" stroke-dasharray="6 8"/>
+          <circle cx="-160" cy="0" r="4" fill="rgba(0,229,255,0.4)" filter="url(#glow)"/>
+        </g>
+        <g transform="translate(270,200)">
+          <ellipse class="orbit-ring-2" cx="0" cy="0" rx="120" ry="35" fill="none" stroke="rgba(124,92,252,0.06)" stroke-width="1" stroke-dasharray="4 10"/>
+          <circle cx="0" cy="-35" r="3" fill="rgba(124,92,252,0.5)" filter="url(#glow)"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════ ABOUT ═══════ -->
+<section id="about" class="about-section" style="padding-top:60px">
+  <div class="about-grid">
+    <div class="reveal">
+      <div class="section-label">About Me</div>
+      <h2 class="section-title" id="aboutHeading">Building End-to-End AI Solutions</h2>
+      <p class="section-sub" id="aboutSub" style="margin-bottom:8px"></p>
+    </div>
+    <div class="about-text reveal" style="transition-delay:.15s">
+      <p id="aboutPara1"></p>
+      <p id="aboutPara2"></p>
+    </div>
+    <div class="about-tags reveal" id="aboutTags" style="transition-delay:.25s"></div>
+    <div class="about-stats reveal" id="aboutStats" style="transition-delay:.35s"></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════ SKILLS ═══════ -->
+<section id="skills">
+  <div class="reveal">
+    <div class="section-label">Skills & Tools</div>
+    <h2 class="section-title" id="skillsTitle">My Tech Stack</h2>
+    
+  </div>
+  <div class="skills-cats reveal" id="skillCats" style="transition-delay:.1s"></div>
+  <div class="skills-grid reveal" id="skillsGrid" style="transition-delay:.2s"></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════ PROJECTS ═══════ -->
+<section id="projects">
+  <div class="projects-header reveal">
+    <div>
+      <div class="section-label">Projects</div>
+      <h2 class="section-title" id="projectsTitle" style="margin-bottom:0">Featured Work</h2>
+    </div>
+    <button class="view-all-btn" type="button" onclick="openViewAll()">View All Projects →</button>
+  </div>
+  <div class="projects-grid" id="projectsGrid"></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════ CERTIFICATIONS ═══════ -->
+<section id="certs">
+  <div class="reveal">
+    <div class="section-label">Certifications</div>
+    <h2 class="section-title" id="certsTitle">Credentials</h2>
+  </div>
+  <div class="certs-grid reveal" id="certsGrid" style="transition-delay:.15s"></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════ FUTURE PLANS ═══════ -->
+<section id="plans">
+  <div class="reveal">
+    <div class="section-label">Roadmap</div>
+    <h2 class="section-title" id="plansTitle">Future Plans</h2>
+    <p class="section-sub" id="plansSub" style="margin-bottom:40px">Where I'm heading next</p>
+  </div>
+  <div class="timeline reveal" id="plansTimeline" style="transition-delay:.15s"></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════ CURRENT FOCUS ═══════ -->
+<section id="focus">
+  <div class="reveal">
+    <div class="section-label">Right Now</div>
+    <h2 class="section-title" id="focusTitle">Current Focus</h2>
+  </div>
+  <div class="focus-grid reveal" id="focusGrid" style="transition-delay:.15s"></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════ CONTACT ═══════ -->
+<section id="contact">
+  <div class="contact-grid">
+    <div class="reveal">
+      <div class="contact-info">
+        <div class="section-label">Get In Touch</div>
+        <h2 id="contactTitle">Let's Build Something Amazing</h2>
+        <p id="contactDesc">Open to collaborations, freelance projects, and full-time opportunities.</p>
+        <div class="contact-items" id="contactItems"></div>
+      </div>
+    </div>
+    <div class="reveal" style="transition-delay:.15s">
+      <div class="contact-form">
+        <div class="form-group">
+          <label class="form-label">Your Name</label>
+          <input type="text" class="form-input" placeholder="John Doe">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" placeholder="john@example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message</label>
+          <textarea class="form-input" placeholder="Tell me about your project..."></textarea>
+        </div>
+        <button class="btn-send" onclick="handleFormSubmit(this)">Send Message →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-name" id="footerName">Sai Vignesh</div>
+  <div class="footer-copy">&copy; Sai Vignesh. All rights reserved.</div>
+  <div class="footer-links">
+    <a href="#about">About</a>
+    <a href="#skills">Skills</a>
+    <a href="#projects">Projects</a>
+    <a href="#certs">Certs</a>
+    <a href="#contact">Contact</a>
+  </div>
+</footer>
+
+<!-- VIEW ALL PAGE -->
+<div id="viewAll">
+  <div class="va-header">
+    <div class="va-back" onclick="closeViewAll()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Back
+    </div>
+    <div class="va-title">All Projects</div>
+    <div style="color:var(--t3);font-size:13px" id="vaCount"></div>
+  </div>
+  <div class="va-grid" id="vaGrid"></div>
+</div>
+
+<!-- SCROLL TO TOP -->
+<button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<script>
+/* ─── LOAD DATA ─── */
+const defaultData = {
+  homepage:{name:'Sai Vignesh',title:'Junior Data Scientist | ML Engineer',tagline:'Junior Data Scientist skilled in Machine Learning, Deep Learning, NLP, Generative AI, Python, LLM and cloud deployment. Passionate about building end-to-end AI solutions for real-world problems.',resume:'#',github:'https://github.com',linkedin:'https://linkedin.com',twitter:'#',email:'saivignesg7@gmail.com',huggingface:'https://huggingface.co',phone:'+91-6383560198'},
+  about:{heading:"Building End-to-End AI Solutions",para1:'Junior Data Scientist skilled in Machine Learning, Deep Learning, NLP, Generative AI, Python, LLM and cloud deployment. Passionate about building end-to-end AI solutions for real-world problems.',para2:'BE Computer Science from Vels Institute of Science, Technology & Advanced Studies, Chennai. Experience as Data Science Intern at AI Variant, Data Analyst Intern at Vcodez, and SAP Trainee at Hanon Hanhook.',tags:['Python','Machine Learning','Deep Learning','NLP','Generative AI','LLMs','TensorFlow','PyTorch','FastAPI','Docker','PySpark','Power BI'],stat1:'6+ Projects',stat2:'3 Internships',stat3:'1 Certification'},
+  skills:[
+    {id:1,name:'Python',cat:'Programming',level:95,icon:'python',color:'#3776AB'},
+    {id:2,name:'MySQL',cat:'Programming',level:85,icon:'mysql',color:'#4479A1'},
+    {id:3,name:'GitHub',cat:'Programming',level:82,icon:'git',color:'#F05032'},
+    {id:4,name:'Pandas',cat:'Data Analysis',level:92,icon:'pandas',color:'#150458'},
+    {id:5,name:'NumPy',cat:'Data Analysis',level:90,icon:'numpy',color:'#013243'},
+    {id:6,name:'SciPy',cat:'Data Analysis',level:78,icon:'scipy',color:'#8CAAE6'},
+    {id:7,name:'Excel',cat:'Data Analysis',level:85,icon:'excel',color:'#217346'},
+    {id:8,name:'Matplotlib',cat:'Visualization',level:88,icon:'matplotlib',color:'#11557C'},
+    {id:9,name:'Seaborn',cat:'Visualization',level:85,icon:'seaborn',color:'#4C72B0'},
+    {id:10,name:'Plotly',cat:'Visualization',level:80,icon:'plotly',color:'#3F4F75'},
+    {id:11,name:'Streamlit',cat:'Visualization',level:88,icon:'streamlit',color:'#FF4B4B'},
+    {id:12,name:'Power BI',cat:'Visualization',level:82,icon:'powerbi',color:'#F2C811'},
+    {id:13,name:'Scikit-learn',cat:'Machine Learning',level:90,icon:'scikitlearn',color:'#F7931E'},
+    {id:14,name:'XGBoost',cat:'Machine Learning',level:85,icon:'xgboost',color:'#FF6600'},
+    {id:15,name:'MLflow',cat:'Machine Learning',level:75,icon:'mlflow',color:'#0194E2'},
+    {id:16,name:'TensorFlow',cat:'Deep Learning',level:88,icon:'tensorflow',color:'#FF6F00'},
+    {id:17,name:'Keras',cat:'Deep Learning',level:86,icon:'keras',color:'#D00000'},
+    {id:18,name:'HuggingFace',cat:'Generative AI',level:84,icon:'huggingface',color:'#FFD21E'},
+    {id:19,name:'LangChain',cat:'Generative AI',level:80,icon:'langchain',color:'#1C3C3C'},
+    {id:20,name:'RAG',cat:'Generative AI',level:78,icon:'openai',color:'#412991'},
+    {id:21,name:'PySpark',cat:'Big Data & Cloud',level:72,icon:'spark',color:'#E25A1C'},
+    {id:22,name:'Azure',cat:'Big Data & Cloud',level:70,icon:'azure',color:'#0078D4'},
+    {id:23,name:'Docker',cat:'DevOps & Tools',level:78,icon:'docker',color:'#2496ED'},
+    {id:24,name:'FastAPI',cat:'DevOps & Tools',level:85,icon:'fastapi',color:'#009688'},
+    {id:25,name:'VS Code',cat:'DevOps & Tools',level:90,icon:'vscode',color:'#007ACC'}
+  ],
+  projects:[
+    {id:1,title:'AI-Powered Fraud Detection Dashboard',desc:'Built an interactive analytics dashboard to detect fraud patterns across 50K+ transactions using Isolation Forest and Random Forest, achieving 94%+ accuracy with real-time KPI tracking.',tags:['Python','Scikit-learn','Streamlit','Random Forest'],demo:'#',github:'#',featured:true,img:''},
+    {id:2,title:'CherryAI Document Q&A Chatbot',desc:'Developed a document chatbot with hybrid semantic search (SentenceTransformers + TF-IDF) and OCR, reducing retrieval time by ~40% across PDFs and scanned images.',tags:['NLP','SentenceTransformers','TF-IDF','OCR','Python'],demo:'#',github:'#',featured:true,img:''},
+    {id:3,title:'AI Corruption Detection Dashboard',desc:'Built an ML-powered dashboard to estimate corruption risk across 1000+ government project records, enabling policy-level insights using supervised classification models.',tags:['Python','Scikit-learn','Streamlit','Classification'],demo:'#',github:'#',featured:true,img:''},
+    {id:4,title:'CherryAI Personal Assistant',desc:'Built and deployed CherryAI, a full-stack AI assistant powered by LLaMA3 (Groq API) with web search, file generation and code analysis using Python, Streamlit.',tags:['LLaMA3','Groq API','Streamlit','Python'],demo:'#',github:'#',featured:true,img:''},
+    {id:5,title:'Smart AI Detection',desc:'Built a CNN-based computer vision dashboard for facial recognition, human counting, and product detection, deployed via FastAPI and Streamlit for real-time media analysis.',tags:['CNN','FastAPI','Streamlit','Computer Vision'],demo:'#',github:'#',featured:false,img:''},
+    {id:6,title:'Bank Loan Analysis Dashboard',desc:'Built Bank Loan Analysis Dashboard on 50,000+ records using MySQL, Excel and Power BI with KPI tracking, EDA, Good vs Bad Loan classification and 3-sheet interactive visualization.',tags:['MySQL','Excel','Power BI','EDA'],demo:'#',github:'#',featured:false,img:''}
+  ],
+  certs:[{id:1,title:'Data Science & Gen AI',issuer:'Professional Certification',date:'2025',url:'#',desc:'Comprehensive certification covering Data Science, Machine Learning, and Generative AI.',img:''}],
+  plans:[
+    {id:1,year:'2026',title:'Advanced LLM & Agent Systems',desc:'Building autonomous AI agents with multi-step reasoning, tool use, and RAG pipelines for enterprise applications.',img:''},
+    {id:2,year:'2026',title:'MLOps & Production ML',desc:'Mastering end-to-end ML pipelines with MLflow, Kubernetes, and cloud deployment at scale.',img:''},
+    {id:3,year:'2027',title:'Research & Open Source',desc:'Contributing to open-source AI frameworks, publishing research papers, and building community-driven AI tools.',img:''}
+  ],
+  focus:[
+    {id:1,title:'Generative AI & LLMs',desc:'Deepening expertise in LLMs, Prompt Engineering, RAG, Vector Search, HuggingFace, and SentenceTransformers.',progress:70,status:'Active',img:''},
+    {id:2,title:'Deep Learning & Computer Vision',desc:'Building CNN, RNN, LSTM models with TensorFlow and Keras for real-world applications.',progress:65,status:'In Progress',img:''},
+    {id:3,title:'Cloud & Big Data',desc:'Expanding skills in PySpark, Azure cloud services, and distributed computing.',progress:40,status:'Learning',img:''}
+  ],
+  contact:{title:"Let's Build Something Amazing",desc:'Seeking Data Science or ML Engineering roles. Open to collaborations, freelance projects, and full-time opportunities.',email:'saivignesg7@gmail.com',phone:'+91-6383560198',location:'Bangalore, India'},
+  activity:[]
+};
+// Try localStorage first for instant load, then sync from Supabase
+var D = JSON.parse(localStorage.getItem('pfData') || JSON.stringify(defaultData));
+for(var k in defaultData){if(!D[k])D[k]=defaultData[k];}
+
+// Load from Supabase (overwrites localStorage data with cloud data)
+async function loadFromSupabase(){
+  if(!supabase)return;
+  try{
+    var {data,error}=await supabase.from('portfolio_data').select('data').eq('id',1).single();
+    if(data&&data.data){
+      var cloud=data.data;
+      for(var k in cloud)D[k]=cloud[k];
+      localStorage.setItem('pfData',JSON.stringify(D));
+      init();
+      setTimeout(reobserve,200);
+      console.log('Loaded from Supabase');
+    }
+  }catch(e){console.log('Supabase load error:',e);}
+}
+// Load cloud data after page renders
+setTimeout(loadFromSupabase,500);
+// Poll Supabase every 5 seconds for admin changes
+setInterval(loadFromSupabase,5000);
+
+/* ─── SKILL ICONS SVG ─── */
+const ICONS = {
+  python:`<svg viewBox="0 0 128 128"><linearGradient id="pyg1" x1="70.252" x2="170.659" y1="1237.476" y2="1151.089" gradientTransform="matrix(.563 0 0 -.568 -29.215 707.817)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#5A9FD4"/><stop offset="1" stop-color="#306998"/></linearGradient><linearGradient id="pyg2" x1="209.474" x2="130.276" y1="1098.811" y2="1170.575" gradientTransform="matrix(.563 0 0 -.568 -29.215 707.817)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD43B"/><stop offset="1" stop-color="#FFE873"/></linearGradient><path fill="url(#pyg1)" d="M63.391 1.988c-4.222.02-8.252.379-11.8 1.007-10.45 1.846-12.346 5.71-12.346 12.837v9.411h24.693v3.137H29.977c-7.176 0-13.46 4.313-15.426 12.521-2.268 9.405-2.368 15.275 0 25.096 1.755 7.311 5.947 12.519 13.124 12.519h8.491V67.234c0-8.151 7.051-15.34 15.426-15.34h24.665c6.866 0 12.346-5.654 12.346-12.548V15.833c0-6.693-5.646-11.72-12.346-12.836-4.244-.706-8.645-1.027-12.866-1.009zM50.037 9.557c2.55 0 4.634 2.117 4.634 4.721 0 2.593-2.083 4.69-4.634 4.69-2.56 0-4.633-2.097-4.633-4.69-.001-2.604 2.073-4.721 4.633-4.721z"/><path fill="url(#pyg2)" d="M91.682 28.38v10.966c0 8.5-7.208 15.655-15.426 15.655H51.591c-6.756 0-12.346 5.783-12.346 12.549v23.515c0 6.691 5.818 10.628 12.346 12.547 7.816 2.297 15.312 2.713 24.665 0 6.216-1.801 12.346-5.423 12.346-12.547v-9.412H63.938v-3.138h37.012c7.176 0 9.852-5.005 12.348-12.519 2.578-7.735 2.467-15.174 0-25.096-1.774-7.145-5.161-12.521-12.348-12.521h-9.268zM78.79 90.01c2.561 0 4.634 2.097 4.634 4.692 0 2.602-2.074 4.719-4.634 4.719-2.55 0-4.633-2.117-4.633-4.719 0-2.595 2.083-4.692 4.633-4.692z"/></svg>`,
+  mysql:`<svg viewBox="0 0 24 24" fill="#4479A1"><path d="M16.405 5.501c-.115 0-.193.014-.274.033v.013h.014c.054.104.146.18.214.273.054.107.1.214.154.32l.014-.015c.094-.066.14-.172.14-.333-.04-.047-.046-.094-.08-.14-.04-.067-.126-.1-.18-.153zM5.77 18.695h-.927a50.854 50.854 0 0 0-.27-4.41h-.008l-1.41 4.41H2.45l-1.4-4.41h-.01a72.892 72.892 0 0 0-.195 4.41H0c.055-1.966.192-3.81.41-5.53h1.15l1.335 4.064h.008l1.347-4.064h1.095c.242 2.015.384 3.86.428 5.53zm4.017-4.08c-.378 2.045-.876 3.533-1.492 4.46-.482.723-1.01 1.084-1.583 1.084-.152 0-.338-.046-.555-.135v-.481c.107.017.25.025.43.025.35 0 .63-.1.845-.304.267-.254.4-.513.4-.776 0-.198-.076-.586-.229-1.162L6.58 13.135h.876l.7 2.618c.16.586.218.94.174 1.06-.378 1.013-.76 1.707-1.145 2.082l-.015-.015c.078-.063.153-.156.224-.28l.014-.013c.01.01.01.01 0 0l.034-.06.04-.083v-.013l.017-.025c.084-.202.163-.42.237-.651l1.252-4.72zM12.86 18.695h-.78v-.313c-.297.254-.665.38-1.103.38-.343 0-.615-.11-.813-.326a1.085 1.085 0 0 1-.3-.751c0-.433.198-.77.594-1.013.396-.243.96-.364 1.692-.364v-.062c0-.404-.272-.606-.816-.606-.437 0-.83.122-1.177.366l-.187-.447c.43-.286.93-.43 1.502-.43.906 0 1.358.434 1.358 1.3v1.584c0 .313.042.627.127.94l-.097.003zm-.78-1.63v-.495c-1.005 0-1.507.28-1.507.84 0 .165.054.307.163.425.108.118.257.177.444.177a.96.96 0 0 0 .584-.194c.155-.13.256-.29.304-.478l.012-.276zm-7.18 1.63v-3.94h-.507v-.525h.507v-.238c0-.485.121-.845.364-1.08.244-.234.593-.352 1.048-.352.217 0 .39.017.52.049v.512a1.617 1.617 0 0 0-.35-.036c-.283 0-.48.077-.592.23-.112.153-.168.404-.168.754v.16h.86v.526h-.86v3.94H4.9z"/><path fill="#4479A1" d="M23.482 17.222c-.414-.224-1.14-.345-1.822-.363l-.18-.005c-.54-.013-.74-.023-.99-.05-.283-.03-.446-.083-.562-.16l.08-.21c.13.05.26.07.41.07l.38.007c.587.008 1.127.017 1.407.034.28.017.5.04.73.117.229.077.413.195.543.353.03.05.04.1.04.15 0 .08-.04.167-.12.267l-.048.06c-.07.063-.12.1-.14.11a.853.853 0 0 1-.2.113c-.282.12-.55.175-.807.175-.28 0-.557-.063-.81-.187l-.13-.07a2.33 2.33 0 0 1-.23-.143c-.09-.07-.12-.1-.12-.144 0-.1.12-.18.14-.18l.24.15.26.14c.15.08.35.12.55.12.34 0 .62-.1.83-.3l.087-.093-.04-.05a1.24 1.24 0 0 0-.33-.16l-.13-.033-.183-.044-.13-.023zm-8.447-3.4c-.16-.036-.36-.05-.64-.05-.28 0-.527.063-.73.187a.67.67 0 0 0-.317.566c0 .205.077.363.232.475.155.112.41.202.764.27l.27.054c.327.066.567.17.72.312.152.14.228.342.228.603 0 .324-.128.583-.384.78-.256.196-.6.294-1.033.294-.436 0-.776-.085-1.018-.255l.174-.46c.275.153.6.23.974.23.278 0 .5-.057.664-.17a.542.542 0 0 0 .246-.467c0-.212-.083-.375-.25-.488-.165-.114-.432-.206-.798-.278l-.264-.05c-.31-.062-.537-.16-.685-.295a.672.672 0 0 1-.22-.526c0-.298.12-.54.36-.726.24-.186.555-.28.947-.28.338 0 .635.058.89.175l-.152.448z"/></svg>`,
+  git:`<svg viewBox="0 0 24 24" fill="#F05032"><path d="M23.546 10.93L13.067.452a1.55 1.55 0 00-2.188 0L8.708 2.627l2.76 2.76a1.838 1.838 0 012.327 2.341l2.66 2.66a1.838 1.838 0 011.062 3.328 1.838 1.838 0 01-2.611-2.593l-2.48-2.48v6.53a1.838 1.838 0 01-1.024 3.37 1.838 1.838 0 01-.535-3.593V8.85a1.838 1.838 0 01-.999-2.41L7.144 3.706.453 10.396a1.55 1.55 0 000 2.188l10.48 10.48a1.55 1.55 0 002.186 0l10.427-10.428a1.55 1.55 0 000-2.187z"/></svg>`,
+  pandas:`<svg viewBox="0 0 24 24" fill="#150458"><path d="M16.922 0h2.222v7.006h-2.222V0zm-4.383 8.31h2.222v1.104H12.54V8.31zm-6.26-2.924h2.222v7.006H6.278V5.386zm0 8.662h2.222v7.006H6.278v-7.006zM16.922 10.048h2.222v7.006h-2.222v-7.006zM12.54 3.386h2.222v3.924H12.54V3.386zm0 6.028h2.222v7.006H12.54v-7.006zm0 8.11h2.222v3.53H12.54v-3.53zM16.922 18.158h2.222v5.006h-2.222v-5.006z"/></svg>`,
+  numpy:`<svg viewBox="0 0 24 24" fill="#013243"><path d="M10.315 4.876L6.098 2.753 1.883 4.876l4.215 2.124 4.217-2.124zm3.29 1.655l-4.33-2.18-4.163 2.097v8.057l4.162 2.097V8.544l4.331-2.013zm.076 7.988l4.163 2.098V8.56l-4.163-2.097v8.056zm4.436-9.71L13.9 2.685 9.684 4.808l4.216 2.124 4.217-2.124zM9.528 17.606l4.163 2.097 4.163-2.097V9.548l-4.163 2.098v8.057l-4.163-2.097zm-5.76-.04l4.215 2.124 4.217-2.124-4.217-2.123-4.216 2.124z"/></svg>`,
+  scipy:`<svg viewBox="0 0 24 24" fill="none" stroke="#8CAAE6" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M7 12c0-2.5 2-5 5-5s5 2.5 5 5-2 5-5 5"/><path d="M12 7v10"/></svg>`,
+  excel:`<svg viewBox="0 0 24 24" fill="#217346"><path d="M23 1.5q.41 0 .7.3.3.29.3.7v19q0 .41-.3.7-.29.3-.7.3H7q-.41 0-.7-.3-.3-.29-.3-.7V18H1q-.41 0-.7-.3-.3-.29-.3-.7V7q0-.41.3-.7Q.58 6 1 6h5V2.5q0-.41.3-.7.29-.3.7-.3zM1 17h5V7H1zm15 4V18H7v3zm0-4.5v-2.8H7v2.8zm0-4.3V9.5H7v2.7zm0-4.2V5H7v3zM23 22V18h-6v4zm0-5.5v-2.8h-6v2.8zm0-4.3V9.5h-6v2.7zm0-4.2V2.5H7V5h9.5q.41 0 .7.3.3.29.3.7V8zM3.54 13.81l1.77-3.31L3.69 7.5h1.59l1.01 2.21q.14.31.2.52.08-.24.22-.54l1.06-2.19h1.44l-1.7 2.96 1.76 3.35h-1.54l-1.17-2.53-.17-.38q-.12.28-.18.4L5.1 13.81z"/></svg>`,
+  matplotlib:`<svg viewBox="0 0 24 24" fill="none" stroke="#11557C" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="7 17 10 10 13 14 16 8 19 12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>`,
+  seaborn:`<svg viewBox="0 0 24 24" fill="none" stroke="#4C72B0" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="5" y="13" width="3" height="6" rx="1" fill="#4C72B0" opacity=".3"/><rect x="10" y="9" width="3" height="10" rx="1" fill="#4C72B0" opacity=".5"/><rect x="15" y="6" width="3" height="13" rx="1" fill="#4C72B0" opacity=".7"/></svg>`,
+  plotly:`<svg viewBox="0 0 24 24" fill="none" stroke="#3F4F75" stroke-width="1.5"><path d="M3 20L8 10l4 6 4-12 5 8"/><circle cx="8" cy="10" r="2" fill="#3F4F75"/><circle cx="12" cy="16" r="2" fill="#3F4F75"/><circle cx="16" cy="4" r="2" fill="#3F4F75"/></svg>`,
+  streamlit:`<svg viewBox="0 0 24 24" fill="#FF4B4B"><path d="M12 2L1 12h4v10h14V12h4L12 2zm0 3.5L18.5 12H16v8H8v-8H5.5L12 5.5z"/></svg>`,
+  powerbi:`<svg viewBox="0 0 24 24" fill="#F2C811"><path d="M14 4h-2v16h2V4zm4 4h-2v12h2V8zm-8 3H8v9h2v-9zm-4 3H4v6h2v-6zm12-1h-2v7h2v-7z"/></svg>`,
+  scikitlearn:`<svg viewBox="0 0 24 24" fill="#F7931E"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><circle cx="12" cy="16" r="3"/><line x1="8" y1="11" x2="12" y2="13" stroke="#F7931E" stroke-width="1"/><line x1="16" y1="11" x2="12" y2="13" stroke="#F7931E" stroke-width="1"/></svg>`,
+  xgboost:`<svg viewBox="0 0 24 24" fill="none" stroke="#FF6600" stroke-width="2"><path d="M12 2v20M4 6l8 6-8 6M20 6l-8 6 8 6"/></svg>`,
+  mlflow:`<svg viewBox="0 0 24 24" fill="none" stroke="#0194E2" stroke-width="1.5"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 12l3 3 5-6"/></svg>`,
+  tensorflow:`<svg viewBox="0 0 24 24" fill="#FF6F00"><path d="M1.292 5.856L11.54 0v24l-4.095-2.378V7.603l-3.079 1.791-3.074-1.79zm21.416 1.752l-3.074 1.79-3.074-1.79V18.9l-3.079 1.79-.016-7.584 3.095-1.8V24l10.222-5.856-1.074-.623V6.985zm-10.207 9.56l3.079-1.79v3.578l-3.079 1.791V17.168z"/></svg>`,
+  keras:`<svg viewBox="0 0 24 24" fill="#D00000"><path d="M6 3v18h2.4V14.7L13.4 21h3.2l-5.6-7.2L16 7.2h-3.1l-4.5 5.7V3z"/></svg>`,
+  huggingface:`<svg viewBox="0 0 24 24" fill="#FFD21E"><circle cx="12" cy="12" r="10" fill="none" stroke="#FFD21E" stroke-width="1.5"/><circle cx="9" cy="10" r="1.5" fill="#FFD21E"/><circle cx="15" cy="10" r="1.5" fill="#FFD21E"/><path d="M8 15c1 2 3 3 4 3s3-1 4-3" fill="none" stroke="#FFD21E" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+  langchain:`<svg viewBox="0 0 24 24" fill="none" stroke="#1C3C3C" stroke-width="1.5"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="12" r="3"/><path d="M9 12h6"/><circle cx="12" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><path d="M12 9v6"/></svg>`,
+  openai:`<svg viewBox="0 0 24 24" fill="#412991"><path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.998 5.998 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm17.694 4.118l-5.844-3.37 2.02-1.166a.075.075 0 0 1 .071 0l4.83 2.785a4.494 4.494 0 0 1-.693 8.093v-5.666a.785.785 0 0 0-.384-.676zm2.008-3.023l-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L10.5 9.494V7.163a.08.08 0 0 1 .033-.063l4.83-2.786a4.496 4.496 0 0 1 6.68 4.66zM9.272 12.834l-2.02-1.164a.08.08 0 0 1-.038-.057V6.03a4.498 4.498 0 0 1 7.37-3.457l-.142.08L9.66 5.412a.795.795 0 0 0-.393.681l-.004 6.741zm1.1-2.368l2.603-1.502 2.606 1.502v3.006L12.975 15.474l-2.603-1.502z"/></svg>`,
+  spark:`<svg viewBox="0 0 24 24" fill="#E25A1C"><path d="M12 2L4 7v10l8 5 8-5V7l-8-5zm0 2.5L17.5 8 12 11.5 6.5 8 12 4.5zM6 9.5l5 3v6l-5-3v-6zm12 0v6l-5 3v-6l5-3z"/></svg>`,
+  azure:`<svg viewBox="0 0 24 24" fill="#0078D4"><path d="M13.05 4.24L6.56 18.05l2.64.01 1.14-2.73h5.72l-.39-.95H10.95l4.54-10.82L22 18.06h-4.67l1.14 2.73h6.48L13.05 4.24zM3.26 6.37L2 20.79h3.72l.85-9.75 3.18 7.61h2.38l-3.8-9.01L6.5 6.37H3.26z"/></svg>`,
+  docker:`<svg viewBox="0 0 24 24" fill="#2496ED"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185zm-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.186zm0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.185.185.186zm-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.185.185.186zm-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.185.186.186zm5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185zm-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185zm-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.185-.186H5.136a.186.186 0 00-.186.185v1.888c0 .102.084.185.186.185zm0-2.716h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.185.186.186zM24 11.5c0-.69-.236-1.127-.697-1.492l-.003-.002c-.206-.163-.478-.36-.841-.575a8.94 8.94 0 00-.334-.186c.003-.048.005-.095.005-.143 0-.238-.019-.467-.057-.688-.107-.623-.388-1.16-.867-1.558l-.055-.042-.06-.032a.652.652 0 00-.269-.07.56.56 0 00-.298.075c-.344.2-.583.477-.743.812l-.003.008c-.137.289-.215.608-.24.944a4.34 4.34 0 00.057 1.053l.005.02C18.39 11.21 16.702 12 13.95 12H.5a.5.5 0 00-.5.5c0 .317.02.674.062 1.058.123 1.147.465 2.383 1.235 3.334.057.07.12.133.185.196.075.073.15.145.23.21.364.3.77.536 1.21.71a7.63 7.63 0 001.714.508c1.143.213 2.42.254 3.79.122a16.06 16.06 0 003.49-.82c.973-.37 1.862-.85 2.596-1.518.956-.87 1.67-1.963 2.222-3.29h.338c.79 0 1.394-.094 1.862-.314.405-.191.707-.464.862-.782a1.16 1.16 0 00.1-.453z"/></svg>`,
+  fastapi:`<svg viewBox="0 0 24 24" fill="#009688"><path d="M12 0C5.375 0 0 5.375 0 12c0 6.627 5.375 12 12 12 6.626 0 12-5.373 12-12 0-6.625-5.373-12-12-12zm-.624 21.62v-7.528H7.19L13.203 2.38v7.528h4.029L11.376 21.62z"/></svg>`,
+  vscode:`<svg viewBox="0 0 24 24" fill="#007ACC"><path d="M23.15 2.587L18.21.21a1.166 1.166 0 0 0-1.332.183l-8.43 7.672L4.77 5.62a.78.78 0 0 0-.996.078L2.14 7.282a.78.78 0 0 0-.004 1.103L5.653 12l-3.517 3.614a.78.78 0 0 0 .004 1.103l1.634 1.584a.78.78 0 0 0 .996.078l3.678-2.444 8.43 7.672a1.166 1.166 0 0 0 1.332.183l4.94-2.377A1.176 1.176 0 0 0 24 20.31V3.69a1.176 1.176 0 0 0-.85-1.103zm-5.06 14.97L12.81 12l5.28-5.557v11.114z"/></svg>`,
+  javascript:`<svg viewBox="0 0 24 24" fill="#F7DF1E"><path d="M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66.39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.405-.6-.586-.78-.63-.705-1.469-1.065-2.834-1.034l-.705.089c-.676.165-1.32.525-1.71 1.005-1.14 1.291-.811 3.541.569 4.471 1.365 1.02 3.361 1.244 3.616 2.205.24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004.029-.09.24-.705.074-1.65l.046.067zm-8.983-7.245h-2.248c0 1.938-.009 3.864-.009 5.805 0 1.232.063 2.363-.138 2.711-.33.689-1.18.601-1.566.48-.396-.196-.597-.466-.83-.855-.063-.105-.11-.196-.127-.196l-1.825 1.125c.305.63.75 1.172 1.324 1.517.855.51 2.004.675 3.207.405.783-.226 1.458-.691 1.811-1.411.51-.93.402-2.07.397-3.346.012-2.054 0-4.109 0-6.179l.004-.056z"/></svg>`,
+  react:`<svg viewBox="0 0 24 24" fill="#61DAFB"><path d="M14.23 12.004a2.236 2.236 0 0 1-2.235 2.236 2.236 2.236 0 0 1-2.236-2.236 2.236 2.236 0 0 1 2.235-2.236 2.236 2.236 0 0 1 2.236 2.236zm2.648-10.69c-1.346 0-3.107.96-4.888 2.622-1.78-1.653-3.542-2.602-4.887-2.602-.31 0-.603.054-.874.16-1.564.612-2.105 2.886-1.488 5.956C2.044 8.437 1 9.928 1 11.988c0 2.062 1.045 3.553 2.743 4.547-.617 3.064-.075 5.338 1.488 5.949.27.104.564.158.874.158 1.345 0 3.107-.96 4.888-2.623 1.78 1.654 3.542 2.603 4.887 2.603.31 0 .604-.054.875-.16 1.564-.61 2.105-2.885 1.488-5.95C20.956 15.552 22 14.063 22 12.003c0-2.06-1.045-3.55-2.743-4.544.617-3.067.076-5.34-1.489-5.951a2.44 2.44 0 0 0-.874-.158zM12 16.878c-2.69 0-4.882-2.187-4.882-4.882 0-2.694 2.187-4.882 4.882-4.882 2.694 0 4.882 2.188 4.882 4.882 0 2.695-2.187 4.882-4.882 4.882z"/></svg>`,
+  code:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>`
+};
+
+/* ─── POPULATE HERO ─── */
+function populateHero(){
+  const h=D.homepage;
+  const n=document.getElementById('heroName');if(n){n.textContent=h.name||'Your Name';setTimeout(()=>n.classList.add('typed'),100);}
+  const t=document.getElementById('heroTitle');if(t)t.textContent=h.title||'';
+  const b=document.getElementById('heroBio');if(b)b.textContent=h.tagline||'';
+  const resumeUrl=h.resume||'';
+  const r=document.getElementById('heroResume');
+  const vr=document.getElementById('heroViewResume');
+  // Helper: convert data URL to Blob URL
+  function dataUrlToBlob(dataUrl){
+    try{
+      var parts=dataUrl.split(',');var mime=parts[0].match(/:(.*?);/)[1];
+      var raw=atob(parts[1]);var arr=new Uint8Array(raw.length);
+      for(var i=0;i<raw.length;i++)arr[i]=raw.charCodeAt(i);
+      return URL.createObjectURL(new Blob([arr],{type:mime}));
+    }catch(e){return dataUrl;}
+  }
+  var blobUrl=null;
+  if(resumeUrl && resumeUrl!=='#' && resumeUrl.length>10){
+    if(resumeUrl.startsWith('data:'))blobUrl=dataUrlToBlob(resumeUrl);
+    else blobUrl=resumeUrl;
+  }
+  if(blobUrl){
+    // DOWNLOAD button - triggers file download
+    if(r){
+      r.href=blobUrl;r.download='Sai_Vignesh_Resume.pdf';
+      r.removeAttribute('target');
+      r.onclick=null;r.style.opacity='1';r.style.pointerEvents='auto';
+    }
+    // VIEW button - opens PDF viewer page
+    if(vr){
+      vr.removeAttribute('download');
+      vr.removeAttribute('target');
+      vr.href='javascript:void(0)';
+      vr.style.opacity='1';vr.style.pointerEvents='auto';
+      vr.onclick=function(e){
+        e.preventDefault();
+        // For http URLs (Supabase), open directly - browser will show PDF
+        if(resumeUrl.startsWith('http')){window.open(resumeUrl,'_blank');return;}
+        // For blob/data URLs, open with embedded viewer
+        var w=window.open('','_blank');
+        if(!w){alert('Allow popups to view resume');return;}
+        w.document.open();
+        w.document.write('<html><head><title>Resume</title><style>*{margin:0}body{background:#222}</style></head><body><object data="'+blobUrl+'" type="application/pdf" style="width:100%;height:100vh"><iframe src="'+blobUrl+'" style="width:100%;height:100vh;border:none"></iframe></object></body></html>');
+        w.document.close();
+      };
+    }
+  }else{
+    // No resume uploaded
+    if(r){r.href='#';r.onclick=function(e){e.preventDefault();alert('Resume not uploaded yet. Upload via Admin Panel.');};}
+    if(vr){vr.href='#';vr.onclick=function(e){e.preventDefault();alert('Resume not uploaded yet. Upload via Admin Panel.');};}
+  }
+  const nl=document.getElementById('navLogo');if(nl)nl.textContent=h.name.split(' ')[0]||'Portfolio';
+  const fl=document.getElementById('footerName');if(fl)fl.textContent=h.name||'Portfolio';
+  if(h.github){const el=document.getElementById('socialGithub');if(el)el.href=h.github;}
+  if(h.linkedin){const el=document.getElementById('socialLinkedin');if(el)el.href=h.linkedin;}
+  if(h.huggingface){const el=document.getElementById('socialHuggingface');if(el)el.href=h.huggingface;}
+  if(h.email){const el=document.getElementById('socialEmail');if(el)el.href='mailto:'+h.email;}
+}
+
+/* ─── ABOUT ─── */
+function populateAbout(){
+  var a=D.about;if(!a)return;
+  var ah=document.getElementById('aboutHeading');if(ah)ah.textContent=a.heading||'About Me';
+  // Subtitle: show homepage tagline as subtitle
+  var sub=document.getElementById('aboutSub');
+  if(sub)sub.textContent=D.homepage.tagline||a.para1||'';
+  var ap1=document.getElementById('aboutPara1');if(ap1)ap1.textContent=a.para1||'';
+  var ap2=document.getElementById('aboutPara2');if(ap2)ap2.textContent=a.para2||'';
+  var tags=document.getElementById('aboutTags');
+  if(tags&&a.tags){
+    tags.innerHTML=(Array.isArray(a.tags)?a.tags:[]).map(function(t){
+      return '<span class="about-tag">'+t+'</span>';
+    }).join('');
+  }
+  var stats=document.getElementById('aboutStats');
+  if(stats){
+    stats.innerHTML='<div class="about-stat"><div class="about-stat-num">'+(a.stat1||'')+'</div><div class="about-stat-label">Projects</div></div>'
+      +'<div class="about-stat"><div class="about-stat-num">'+(a.stat2||'')+'</div><div class="about-stat-label">Experience</div></div>'
+      +'<div class="about-stat"><div class="about-stat-num">'+(a.stat3||'')+'</div><div class="about-stat-label">Certified</div></div>';
+  }
+}
+
+/* ─── SKILLS ─── */
+let activeSkillCat='All';
+function populateSkills(){
+  const cats=['All',...new Set(D.skills.map(s=>s.cat))];
+  const catsEl=document.getElementById('skillCats');
+  catsEl.innerHTML=cats.map(c=>`<button class="cat-btn ${c===activeSkillCat?'active':''}" onclick="filterSkills('${c}')">${c}</button>`).join('');
+  renderSkillsGrid();
+}
+function filterSkills(cat){
+  activeSkillCat=cat;
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.toggle('active',b.textContent===cat));
+  renderSkillsGrid();
+}
+function renderSkillsGrid(){
+  const grid=document.getElementById('skillsGrid');
+  const filtered=activeSkillCat==='All'?D.skills:D.skills.filter(s=>s.cat===activeSkillCat);
+  grid.innerHTML=filtered.map(s=>`
+    <div class="skill-card" style="--skill-color:${s.color}20">
+      <div class="skill-icon" style="color:${s.color}">${ICONS[s.icon]||ICONS.code}</div>
+      <span class="skill-name">${s.name}</span>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="background:${s.color}" data-w="${s.level}"></div></div>
+      <div class="skill-cat-label">${s.cat}</div>
+    </div>
+  `).join('');
+  // Animate bars when visible
+  setTimeout(()=>animateSkillBars(),100);
+}
+function animateSkillBars(){
+  document.querySelectorAll('.skill-bar').forEach(bar=>{
+    bar.style.width=bar.dataset.w+'%';
+  });
+}
+
+/* ─── PROJECTS ─── */
+function populateProjects(){
+  const featured=D.projects.filter(p=>p.featured);
+  const grid=document.getElementById('projectsGrid');
+  if(!featured.length){grid.innerHTML=`<div style="color:var(--t3);padding:40px;grid-column:1/-1;text-align:center">No featured projects yet. Add some in the admin panel!</div>`;return;}
+  grid.innerHTML=featured.map((p,i)=>`
+    <div class="proj-card reveal" style="transition-delay:${i*0.1}s">
+      ${p.img?`<div class="proj-banner"><img src="${p.img}" alt="${p.title}"></div>`:''}
+      <div class="proj-body">
+        <div class="proj-num">0${i+1}</div>
+        <div class="proj-title">${p.title}</div>
+        <div class="proj-desc">${p.desc}</div>
+        <div class="proj-tags">${p.tags.map(t=>`<span class="proj-tag">${t}</span>`).join('')}</div>
+        <div class="proj-links">
+          ${p.demo&&p.demo!=='#'?`<a href="${p.demo}" target="_blank" class="proj-link primary">Live Demo ↗</a>`:''}
+          ${p.github&&p.github!=='#'?`<a href="${p.github}" target="_blank" class="proj-link"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg> GitHub</a>`:''}
+          ${p.huggingface&&p.huggingface!=='#'?`<a href="${p.huggingface}" target="_blank" class="proj-link">🤗 HuggingFace</a>`:''}
+          ${p.link&&p.link!=='#'?`<a href="${p.link}" target="_blank" class="proj-link">Link ↗</a>`:''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+}
+
+/* ─── VIEW ALL ─── */
+function openViewAll(){
+  var va=document.getElementById('viewAll');
+  var grid=document.getElementById('vaGrid');
+  if(!va||!grid){alert('View All panel not found');return;}
+  var cnt=document.getElementById('vaCount');
+  if(cnt)cnt.textContent=D.projects.length+' projects';
+  // Build cards HTML
+  var html='';
+  for(var i=0;i<D.projects.length;i++){
+    var p=D.projects[i];
+    var tags='';
+    if(p.tags&&p.tags.length){for(var j=0;j<p.tags.length;j++){tags+='<span class="proj-tag">'+p.tags[j]+'</span>';}}
+    var links='';
+    if(p.demo&&p.demo!=='#')links+='<a href="'+p.demo+'" target="_blank" class="proj-link primary" style="font-size:12px;padding:7px 16px">Demo ↗</a> ';
+    if(p.github&&p.github!=='#')links+='<a href="'+p.github+'" target="_blank" class="proj-link" style="font-size:12px;padding:7px 16px">GitHub</a> ';
+    if(p.huggingface&&p.huggingface!=='#')links+='<a href="'+p.huggingface+'" target="_blank" class="proj-link" style="font-size:12px;padding:7px 16px">HuggingFace</a> ';
+    if(p.link&&p.link!=='#')links+='<a href="'+p.link+'" target="_blank" class="proj-link" style="font-size:12px;padding:7px 16px">Link ↗</a> ';
+    html+='<div class="va-card" style="animation-delay:'+(i*0.07)+'s">';
+    if(p.img)html+='<div style="overflow:hidden"><img src="'+p.img+'" style="width:100%;height:140px;object-fit:cover;display:block" alt="'+p.title+'"></div>';
+    html+='<div style="padding:22px">';
+    html+='<div style="font-family:JetBrains Mono,monospace;font-size:10px;color:var(--ac);letter-spacing:3px;margin-bottom:8px">PROJECT 0'+(i+1)+'</div>';
+    html+='<div style="font-family:Syne,sans-serif;font-size:18px;font-weight:800;color:#fff;margin-bottom:10px">'+p.title+'</div>';
+    html+='<div style="font-size:13px;color:var(--t2);line-height:1.65;margin-bottom:14px">'+p.desc+'</div>';
+    if(tags)html+='<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px">'+tags+'</div>';
+    if(links)html+='<div style="display:flex;gap:8px;flex-wrap:wrap">'+links+'</div>';
+    html+='</div></div>';
+  }
+  if(!D.projects.length)html='<div style="color:var(--t3);padding:60px;text-align:center;grid-column:1/-1">No projects yet.</div>';
+  grid.innerHTML=html;
+  va.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeViewAll(){document.getElementById('viewAll').classList.remove('open');document.body.style.overflow='';}
+
+/* ─── CERTIFICATIONS ─── */
+function populateCerts(){
+  const grid=document.getElementById('certsGrid');
+  if(!D.certs.length){grid.innerHTML=`<div style="color:var(--t3);padding:40px;text-align:center">No certifications added yet.</div>`;return;}
+  grid.innerHTML=D.certs.map(c=>`
+    <div class="cert-card reveal-flip">
+      ${c.img?`<img src="${c.img}" class="cert-full-img" alt="${c.title}">`:`<div class="cert-img">🏆</div>`}
+      <div class="cert-issuer">${c.issuer}</div>
+      <div class="cert-title">${c.title}</div>
+      <div class="cert-date">${c.date}</div>
+      ${c.desc?`<div class="cert-desc">${c.desc}</div>`:''}
+      ${c.url&&c.url!=='#'?`<a href="${c.url}" target="_blank" class="cert-link">View Certificate →</a>`:''}
+    </div>
+  `).join('');
+}
+
+/* ─── PLANS TIMELINE ─── */
+function populatePlans(){
+  const tl=document.getElementById('plansTimeline');
+  if(!D.plans.length){tl.innerHTML=`<div style="color:var(--t3);padding:40px">No plans added yet.</div>`;return;}
+  tl.innerHTML=D.plans.map((p,i)=>`
+    <div class="tl-item reveal" style="transition-delay:${i*.15}s">
+      <div class="tl-year">${p.year}</div>
+      <div class="tl-title">${p.title}</div>
+      <div class="tl-desc">${p.desc}</div>
+      ${p.img?`<img src="${p.img}" class="tl-img" alt="${p.title}">`:``}
+    </div>
+  `).join('');
+}
+
+/* ─── FOCUS ─── */
+function populateFocus(){
+  const grid=document.getElementById('focusGrid');
+  if(!D.focus.length){grid.innerHTML=`<div style="color:var(--t3);padding:40px">No focus items added yet.</div>`;return;}
+  grid.innerHTML=D.focus.map(f=>`
+    <div class="focus-card">
+      ${f.img?`<img src="${f.img}" class="focus-img" alt="${f.title}">`:''}
+      <div class="focus-status">${f.status||'In Progress'}</div>
+      <div class="focus-title">${f.title}</div>
+      <div class="focus-desc">${f.desc}</div>
+      <div class="progress-wrap"><div class="progress-bar" data-w="${f.progress||0}"></div></div>
+      <div class="progress-label"><span>Progress</span><span>${f.progress||0}%</span></div>
+    </div>
+  `).join('');
+}
+
+/* ─── CONTACT ─── */
+function populateContact(){
+  const c=D.contact;
+  const ct=document.getElementById('contactTitle');if(ct)ct.textContent=c.title||'';
+  const cd=document.getElementById('contactDesc');if(cd)cd.textContent=c.desc||'';
+  const items=[];
+  if(c.email)items.push({icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>`,label:'EMAIL',val:c.email,href:'mailto:'+c.email});
+  if(c.phone)items.push({icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014.72 9.71 19.79 19.79 0 011.71 1 2 2 0 013.71 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 7.91a16 16 0 006 6l.91-.91a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 15.92z"/></svg>`,label:'PHONE',val:c.phone,href:'tel:'+c.phone});
+  if(c.location)items.push({icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>`,label:'LOCATION',val:c.location,href:'#'});
+  const ci=document.getElementById('contactItems');
+  if(ci)ci.innerHTML=items.map(item=>`
+    <a href="${item.href}" class="contact-item">
+      <div class="ci-icon">${item.icon}</div>
+      <div><div class="ci-label">${item.label}</div><div class="ci-value">${item.val}</div></div>
+    </a>
+  `).join('');
+}
+
+/* ─── FORM SUBMIT ─── */
+function handleFormSubmit(btn){
+  btn.textContent='Sending...';btn.disabled=true;
+  setTimeout(()=>{btn.textContent='Message Sent! ✓';setTimeout(()=>{btn.textContent='Send Message →';btn.disabled=false;},2000);},1000);
+}
+
+
+
+/* ─── NAV SCROLL ─── */
+window.addEventListener('scroll',()=>{
+  document.getElementById('mainNav').classList.toggle('scrolled',scrollY>80);
+  document.getElementById('scrollTop').classList.toggle('visible',scrollY>400);
+});
+
+/* ─── MOB NAV ─── */
+function toggleMobNav(){document.getElementById('mobNav').classList.toggle('open');}
+
+/* ─── REVEAL ON SCROLL ─── */
+const revealObserver=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      e.target.querySelectorAll('.progress-bar,.skill-bar').forEach(b=>{b.style.width=b.dataset.w+'%';});
+    }
+  });
+},{threshold:0.05,rootMargin:'0px 0px -40px 0px'});
+
+/* ─── INIT ─── */
+function reobserve(){
+  document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-zoom,.reveal-flip').forEach(el=>{
+    if(!el.classList.contains('visible'))revealObserver.observe(el);
+  });
+}
+function init(){
+  populateHero();
+  populateAbout();
+  populateSkills();
+  populateProjects();
+  populateCerts();
+  populatePlans();
+  populateFocus();
+  populateContact();
+  reobserve();
+}
+
+init();
+setTimeout(reobserve,300);
+setTimeout(reobserve,800);
+
+// Sync: listen for cross-tab localStorage changes
+window.addEventListener('storage',function(e){
+  if(e.key==='pfData'){
+    try{
+      var newD=JSON.parse(e.newValue);
+      for(var k in newD)D[k]=newD[k];
+      init();setTimeout(reobserve,100);
+    }catch(ex){}
+  }
+});
+// Sync: poll localStorage every 1.5s for same-tab admin changes
+var _pfSync='';
+setInterval(function(){
+  try{
+    var raw=localStorage.getItem('pfData');
+    if(raw && raw!==_pfSync){
+      _pfSync=raw;
+      var nd=JSON.parse(raw);
+      for(var k in nd)D[k]=nd[k];
+      init();setTimeout(reobserve,100);
+    }
+  }catch(ex){}
+},1500);
+_pfSync=localStorage.getItem('pfData')||'';
+</script>
+</body>
+</html>

@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Admin Panel | Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#000;--bg2:#0a0a0a;--bg3:#111;
+  --gb:rgba(255,255,255,.08);--gbh:rgba(255,255,255,.16);
+  --t1:#fff;--t2:rgba(255,255,255,.72);--t3:rgba(255,255,255,.38);
+  --ac:#00e5ff;--ac2:#7c5cfc;--ac3:#ff6b3d;--ac4:#39ff14;
+  --r:12px;--rs:8px;
+}
+html{scrollbar-width:thin;scrollbar-color:var(--gb) transparent;-webkit-font-smoothing:antialiased}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;line-height:1.6}
+a{color:inherit;text-decoration:none}
+button{font-family:'Syne',sans-serif;cursor:pointer;border:none}
+input,textarea,select{font-family:'Syne',sans-serif}
+
+/* LOGIN */
+#loginScreen{position:fixed;inset:0;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center}
+#loginScreen.hidden{display:none}
+.login-box{background:var(--bg2);border:1px solid var(--gb);border-radius:20px;padding:52px 44px;width:100%;max-width:400px;text-align:center}
+.login-logo{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:6px;text-transform:uppercase;color:var(--ac);margin-bottom:32px}
+.login-box h1{font-size:26px;font-weight:800;margin-bottom:6px;color:#fff}
+.login-box p{color:var(--t3);font-size:13px;margin-bottom:28px}
+.login-box input{width:100%;padding:14px 18px;margin-bottom:10px;background:var(--bg3);border:1px solid var(--gb);border-radius:var(--rs);color:#fff;font-size:14px;outline:none;transition:border-color .3s}
+.login-box input:focus{border-color:var(--ac)}
+.login-err{color:var(--ac3);font-size:13px;margin-bottom:12px;display:none;padding:10px;background:rgba(255,107,61,.08);border-radius:6px}
+.btn-login{width:100%;padding:14px;margin-top:4px;background:var(--ac);color:#000;font-weight:700;font-size:14px;border-radius:100px;cursor:pointer;transition:all .3s}
+.btn-login:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(0,229,255,.3)}
+.login-hint{margin-top:18px;font-size:11px;color:var(--t3);font-family:'JetBrains Mono',monospace}
+
+/* DASHBOARD */
+#dashboard{display:none}
+#dashboard.visible{display:flex;flex-direction:column;min-height:100vh}
+.topbar{position:sticky;top:0;z-index:100;background:rgba(0,0,0,.97);backdrop-filter:blur(40px);border-bottom:1px solid var(--gb);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:58px}
+.topbar-logo{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:5px;text-transform:uppercase;color:var(--ac)}
+.topbar-right{display:flex;gap:10px}
+.btn-sm{padding:7px 16px;border-radius:100px;border:1px solid var(--gb);background:transparent;color:var(--t2);font-size:12px;font-weight:600;transition:all .3s;cursor:pointer}
+.btn-sm:hover{border-color:var(--ac);color:var(--ac)}
+.btn-sm.danger{border-color:rgba(255,107,61,.25);color:var(--ac3)}
+.btn-sm.danger:hover{background:rgba(255,107,61,.08)}
+
+/* LAYOUT */
+.dash-layout{display:flex;flex:1}
+.sidebar{width:210px;flex-shrink:0;border-right:1px solid var(--gb);padding:20px 12px;position:sticky;top:58px;height:calc(100vh - 58px);overflow-y:auto}
+.sidebar-label{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--t3);font-family:'JetBrains Mono',monospace;margin-bottom:8px;padding:0 10px}
+.sidebar-nav{display:flex;flex-direction:column;gap:3px;margin-bottom:24px}
+.sn{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:13px;font-weight:600;color:var(--t2);cursor:pointer;transition:all .2s;border:none;background:none;text-align:left;width:100%}
+.sn:hover{background:rgba(255,255,255,.04);color:#fff}
+.sn.active{background:rgba(0,229,255,.08);color:var(--ac);border:1px solid rgba(0,229,255,.12)}
+.sn svg{width:14px;height:14px;flex-shrink:0}
+.sn-badge{margin-left:auto;font-size:10px;padding:2px 7px;background:rgba(255,255,255,.06);border-radius:100px;font-family:'JetBrains Mono',monospace;min-width:22px;text-align:center}
+
+/* MAIN */
+.main{flex:1;padding:28px 32px;max-width:100%;overflow-x:hidden}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.page-head{margin-bottom:24px}
+.page-head h2{font-size:22px;font-weight:800;margin-bottom:4px;color:#fff}
+.page-head p{color:var(--t3);font-size:13px}
+
+/* CARD */
+.card{background:var(--bg2);border:1px solid var(--gb);border-radius:var(--r);padding:22px;margin-bottom:16px}
+.card h3{font-size:14px;font-weight:700;margin-bottom:16px;color:#fff;letter-spacing:.3px}
+
+/* ROW */
+.row{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;background:rgba(0,0,0,.5);border:1px solid var(--gb);border-radius:var(--rs);margin-bottom:8px;transition:border-color .2s;gap:12px}
+.row:hover{border-color:var(--gbh)}
+.row-img{width:44px;height:44px;border-radius:6px;object-fit:cover;flex-shrink:0;background:var(--bg3);border:1px solid var(--gb)}
+.row-img.placeholder{display:flex;align-items:center;justify-content:center;font-size:18px}
+.row-info{flex:1;min-width:0}
+.row-title{font-size:13px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-sub{font-size:11px;color:var(--t3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-actions{display:flex;gap:6px;flex-shrink:0}
+.ab{padding:5px 12px;border-radius:100px;border:1px solid var(--gb);background:transparent;color:var(--t2);font-size:11px;font-weight:600;transition:all .2s;cursor:pointer;white-space:nowrap}
+.ab:hover{border-color:var(--ac);color:var(--ac)}
+.ab.del:hover{border-color:var(--ac3);color:var(--ac3)}
+.ab.feat{border-color:rgba(0,229,255,.2);color:var(--ac)}
+.badge-feat{font-size:9px;padding:2px 7px;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.15);border-radius:100px;color:var(--ac);font-family:'JetBrains Mono',monospace;margin-left:6px}
+
+/* FORM */
+.add-form{background:rgba(0,0,0,.4);border:1px solid var(--gb);border-radius:var(--rs);padding:18px;margin-top:14px}
+.add-form h4{font-size:11px;font-weight:700;color:var(--t2);letter-spacing:2px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:12px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.form-row.single{grid-template-columns:1fr}
+.form-row.triple{grid-template-columns:1fr 1fr 1fr}
+.af-input{width:100%;padding:10px 14px;background:rgba(0,0,0,.6);border:1px solid var(--gb);border-radius:6px;color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:500;outline:none;transition:border-color .3s}
+.af-input:focus{border-color:var(--ac)}
+.af-input::placeholder{color:var(--t3)}
+textarea.af-input{height:72px;resize:vertical}
+select.af-input{cursor:pointer}
+.img-upload-wrap{position:relative;border:1px dashed rgba(255,255,255,.15);border-radius:8px;padding:16px;text-align:center;cursor:pointer;transition:border-color .3s;background:rgba(0,0,0,.3)}
+.img-upload-wrap:hover{border-color:var(--ac)}
+.img-upload-wrap input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.img-upload-wrap p{font-size:12px;color:var(--t3)}
+.img-preview{width:100%;height:90px;object-fit:cover;border-radius:6px;margin-top:8px;display:none}
+.btn-add{width:100%;padding:10px;margin-top:8px;background:var(--ac);color:#000;font-weight:700;font-size:13px;border-radius:8px;cursor:pointer;transition:all .3s;font-family:'Syne',sans-serif}
+.btn-add:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,229,255,.2)}
+.btn-add.purple{background:var(--ac2);color:#fff}
+.btn-add.orange{background:var(--ac3)}
+
+/* SKILL ICONS GRID */
+.icon-picker{display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:6px;max-height:200px;overflow-y:auto;padding:8px;background:rgba(0,0,0,.4);border:1px solid var(--gb);border-radius:8px;margin-bottom:8px}
+.icon-opt{padding:8px 4px;border-radius:6px;text-align:center;cursor:pointer;border:1px solid transparent;transition:all .2s;font-size:11px;color:var(--t2)}
+.icon-opt:hover{border-color:var(--ac);color:var(--ac);background:rgba(0,229,255,.05)}
+.icon-opt.selected{border-color:var(--ac);background:rgba(0,229,255,.08);color:var(--ac)}
+.icon-opt svg{display:block;margin:0 auto 3px;width:24px;height:24px}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat-card{background:var(--bg2);border:1px solid var(--gb);border-radius:var(--rs);padding:16px 18px}
+.stat-num{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;color:var(--ac)}
+.stat-label{font-size:10px;color:var(--t3);letter-spacing:3px;text-transform:uppercase;margin-top:2px}
+
+/* EMPTY */
+.empty{text-align:center;padding:40px 24px;color:var(--t3)}
+.empty p{font-size:13px;color:var(--t3)}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;right:24px;z-index:99999;background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.2);border-radius:var(--rs);padding:11px 18px;font-size:13px;color:var(--ac);font-weight:600;transform:translateY(80px);opacity:0;transition:all .4s;pointer-events:none}
+#toast.show{transform:translateY(0);opacity:1}
+
+/* CONFIRM MODAL */
+#confirmModal{position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.9);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center}
+#confirmModal.open{display:flex}
+.confirm-box{background:var(--bg2);border:1px solid var(--gb);border-radius:var(--r);padding:32px;width:100%;max-width:340px;text-align:center}
+.confirm-box h3{font-size:18px;font-weight:800;margin-bottom:8px;color:#fff}
+.confirm-box p{color:var(--t2);font-size:13px;margin-bottom:22px}
+.confirm-btns{display:flex;gap:8px;justify-content:center}
+.btn-cancel{padding:9px 22px;border-radius:100px;border:1px solid var(--gb);background:transparent;color:var(--t2);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif}
+.btn-cancel:hover{border-color:var(--gbh);color:#fff}
+.btn-confirm-del{padding:9px 22px;border-radius:100px;border:none;background:rgba(255,107,61,.15);color:var(--ac3);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif}
+.btn-confirm-del:hover{background:rgba(255,107,61,.25)}
+
+/* EDIT MODAL */
+#editModal{position:fixed;inset:0;z-index:99997;background:rgba(0,0,0,.92);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;padding:20px}
+#editModal.open{display:flex}
+.edit-box{background:var(--bg2);border:1px solid var(--gb);border-radius:var(--r);padding:28px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
+.edit-box h3{font-size:18px;font-weight:800;margin-bottom:20px;color:#fff}
+.edit-btns{display:flex;gap:8px;margin-top:16px}
+
+@media(max-width:768px){
+  .sidebar{display:none}
+  .main{padding:16px}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .form-row,.form-row.triple{grid-template-columns:1fr}
+  .topbar{padding:0 14px}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ═══════ SUPABASE CONFIG ═══════
+// MUST match the same values as in index.html
+const SUPABASE_URL = 'https://tbxdnwpxwgkfvkfzorsc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRieGRud3B4d2drZnZrZnpvcnNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NzM1NjMsImV4cCI6MjA5MDI0OTU2M30.PdyqsmakAW5kqTtcSJrzKw_xPwscVNjgCuT4qHvl7Mk';
+let supabase = null;
+try {
+  if(SUPABASE_URL !== 'YOUR_SUPABASE_URL' && typeof window.supabase !== 'undefined') {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  }
+} catch(e) { console.log('Supabase not configured'); }
+</script>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">Portfolio Admin</div>
+    <h1>Welcome Back</h1>
+    <p>Sign in to manage your portfolio</p>
+    <div class="login-err" id="loginErr">⚠ Invalid credentials</div>
+    <input type="text" id="loginU" placeholder="Username" onkeydown="if(event.key==='Enter')doLogin()">
+    <input type="password" id="loginP" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn-login" onclick="doLogin()">Sign In</button>
+    <div class="login-hint">Default: admin / portfolio2026</div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <header class="topbar">
+    <div class="topbar-logo">Portfolio CMS</div>
+    <div class="topbar-right">
+      <button class="btn-sm" onclick="window.open('index.html','_blank')">↗ View Site</button>
+      <button class="btn-sm danger" onclick="doLogout()">Logout</button>
+    </div>
+  </header>
+
+  <div class="dash-layout">
+    <aside class="sidebar">
+      <div class="sidebar-label">Sections</div>
+      <div class="sidebar-nav">
+        <button class="sn active" data-tab="overview" onclick="switchTab(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Overview
+        </button>
+        <button class="sn" data-tab="homepage" onclick="switchTab(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Homepage
+        </button>
+        <button class="sn" data-tab="about" onclick="switchTab(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          About Me
+        </button>
+        <button class="sn" data-tab="skills" onclick="switchTab(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          Skills
+          <span class="sn-badge" id="badgeSkills">0</span>
+        </button>
+        <button class="sn" data-tab="projects" onclick="switchTab(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+          Projects
+          <span class="sn-badge" id="badgeProjects">0</span>
+        </button>
+        <button class="sn" data-tab="certs" onclick="switchTab(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+          Certifications
+          <span class="sn-badge" id="badgeCerts">0</span>
+        </button>
+        <button class="sn" data-tab="plans" onclick="switchTab(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+          Future Plans
+          <span class="sn-badge" id="badgePlans">0</span>
+        </button>
+        <button class="sn" data-tab="focus" onclick="switchTab(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+          Current Focus
+          <span class="sn-badge" id="badgeFocus">0</span>
+        </button>
+        <button class="sn" data-tab="contact" onclick="switchTab(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Contact
+        </button>
+        <button class="sn" data-tab="settings" onclick="switchTab(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M4.93 19.07l1.41-1.41M19.07 19.07l-1.41-1.41M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
+          Settings
+        </button>
+      </div>
+    </aside>
+
+    <main class="main">
+
+      <!-- OVERVIEW -->
+      <div class="tab-panel active" id="tab-overview">
+        <div class="page-head"><h2>Dashboard Overview</h2><p>All portfolio content at a glance</p></div>
+        <div class="stats-row" id="statsRow"></div>
+        <div class="card">
+          <h3>Quick Actions</h3>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <button class="ab" onclick="switchTabByName('projects')">+ Project</button>
+            <button class="ab" onclick="switchTabByName('certs')">+ Certification</button>
+            <button class="ab" onclick="switchTabByName('plans')">+ Plan</button>
+            <button class="ab" onclick="switchTabByName('focus')">+ Focus Item</button>
+            <button class="ab" onclick="switchTabByName('skills')">+ Skill</button>
+          </div>
+        </div>
+        <div class="card"><h3>Recent Activity</h3><div id="recentList"></div></div>
+      </div>
+
+      <!-- HOMEPAGE -->
+      <div class="tab-panel" id="tab-homepage">
+        <div class="page-head"><h2>Homepage</h2><p>Edit your name, resume link, bio and social media</p></div>
+        <div class="card">
+          <h3>Hero Content</h3>
+          <div class="form-row single" style="margin-bottom:8px">
+            <input class="af-input" id="hpName" placeholder="Your Full Name">
+          </div>
+          <div class="form-row single" style="margin-bottom:8px">
+            <input class="af-input" id="hpTitle" placeholder="Your Title (e.g. AI Engineer & Full Stack Developer)">
+          </div>
+          <div class="form-row single" style="margin-bottom:8px">
+            <textarea class="af-input" id="hpTagline" placeholder="Hero tagline / short intro..."></textarea>
+          </div>
+          <div class="form-row single" style="margin-bottom:8px">
+            <input class="af-input" id="hpResume" placeholder="Resume PDF URL (https://...)">
+          </div>
+          <button class="btn-add" onclick="saveHomepage()">Save Hero Content</button>
+        </div>
+        <div class="card">
+          <h3>Resume Upload</h3>
+          <p style="font-size:12px;color:var(--t3);margin-bottom:12px">Upload a PDF resume. It will be available for download on the frontend.</p>
+          <div class="img-upload-wrap" style="margin-bottom:12px">
+            <input type="file" accept=".pdf,application/pdf" onchange="handleResumeUpload(this)">
+            <p>📄 Click to upload Resume (PDF)</p>
+          </div>
+          <div id="resumeStatus" style="font-size:12px;color:var(--ac);display:none;margin-bottom:8px">✓ Resume uploaded successfully</div>
+          <div id="resumePreview" style="display:none;padding:12px;background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.1);border-radius:8px;margin-bottom:8px">
+            <span style="font-size:12px;color:var(--t2)">📄 Resume uploaded</span>
+            <a id="resumeLink" href="#" target="_blank" style="font-size:12px;color:var(--ac);margin-left:12px;font-weight:600">Preview ↗</a>
+          </div>
+        </div>
+        <div class="card">
+          <h3>HuggingFace Profile</h3>
+          <div class="form-row single" style="margin-bottom:8px">
+            <input class="af-input" id="hpHuggingface" placeholder="HuggingFace URL (https://huggingface.co/...)">
+          </div>
+          <button class="btn-add" onclick="saveHomepage()">Save HuggingFace</button>
+        </div>
+        <div class="card">
+          <h3>Social Links</h3>
+          <div class="form-row" style="margin-bottom:8px">
+            <input class="af-input" id="hpGithub" placeholder="GitHub URL">
+            <input class="af-input" id="hpLinkedin" placeholder="LinkedIn URL">
+          </div>
+          <div class="form-row" style="margin-bottom:8px">
+            <input class="af-input" id="hpTwitter" placeholder="Twitter/X URL">
+            <input class="af-input" id="hpEmail" placeholder="Email address">
+          </div>
+          <button class="btn-add" onclick="saveHomepage()">Save Social Links</button>
+        </div>
+      </div>
+
+      <!-- ABOUT -->
+      <div class="tab-panel" id="tab-about">
+        <div class="page-head"><h2>About Me</h2><p>Edit section title, description and stats</p></div>
+        <div class="card">
+          <h3>Section Title (shown on frontend)</h3>
+          <div class="form-row single" style="margin-bottom:8px">
+            <input class="af-input" id="aboutSectionLabel" placeholder="Section label (e.g. About Me)">
+          </div>
+        </div>
+        <div class="card">
+          <h3>About Content</h3>
+          <div class="form-row single" style="margin-bottom:8px">
+            <input class="af-input" id="abHeading" placeholder="Section heading (e.g. Building Tomorrow's Intelligence)">
+          </div>
+          <div class="form-row single" style="margin-bottom:8px">
+            <textarea class="af-input" style="height:90px" id="abPara1" placeholder="First paragraph..."></textarea>
+          </div>
+          <div class="form-row single" style="margin-bottom:8px">
+            <textarea class="af-input" style="height:90px" id="abPara2" placeholder="Second paragraph..."></textarea>
+          </div>
+          <div class="form-row single" style="margin-bottom:8px">
+            <input class="af-input" id="abTags" placeholder="Tags (comma separated): Python, LLMs, React...">
+          </div>
+          <div class="form-row triple" style="margin-bottom:8px">
+            <input class="af-input" id="abStat1" placeholder="Stat 1 (e.g. 15+ Projects)">
+            <input class="af-input" id="abStat2" placeholder="Stat 2 (e.g. 5 Years Exp)">
+            <input class="af-input" id="abStat3" placeholder="Stat 3 (e.g. 3 Publications)">
+          </div>
+          <button class="btn-add" onclick="saveAbout()">Save About</button>
+        </div>
+      </div>
+
+      <!-- SKILLS -->
+      <div class="tab-panel" id="tab-skills">
+        <div class="page-head"><h2>Skills & Tools</h2><p>Manage section title and technical skills</p></div>
+        <div class="card">
+          <h3>Section Display</h3>
+          <div class="form-row" style="margin-bottom:8px">
+            <input class="af-input" id="skillsSectionTitle" placeholder="Section title (e.g. My Tech Stack)" value="My Tech Stack">
+            <input class="af-input" id="skillsSectionSub" placeholder="Subtitle" value="Technologies I work with to build intelligent systems">
+          </div>
+          <button class="btn-add" onclick="saveSectionTitle('skills')">Save Title</button>
+        </div>
+        <div class="card">
+          <h3>All Skills <span style="color:var(--t3);font-size:11px;font-weight:400">(drag to reorder)</span></h3>
+          <div id="skillsList"></div>
+        </div>
+        <div class="card">
+          <div class="add-form">
+            <h4>Add New Skill</h4>
+            <div class="form-row" style="margin-bottom:8px">
+              <input class="af-input" id="skName" placeholder="Skill Name *">
+              <select class="af-input" id="skCat">
+                <option value="Programming">Programming</option>
+                <option value="Data Analysis">Data Analysis</option>
+                <option value="Visualization">Visualization</option>
+                <option value="Machine Learning">Machine Learning</option>
+                <option value="Deep Learning">Deep Learning</option>
+                <option value="Generative AI">Generative AI</option>
+                <option value="Big Data & Cloud">Big Data & Cloud</option>
+                <option value="DevOps & Tools">DevOps & Tools</option>
+              </select>
+            </div>
+            <div class="form-row" style="margin-bottom:8px">
+              <input class="af-input" id="skLevel" type="number" min="1" max="100" placeholder="Level 1-100 (e.g. 90)">
+              <input class="af-input" id="skColor" type="color" value="#00e5ff" style="height:44px">
+            </div>
+            <p style="font-size:11px;color:var(--t3);margin-bottom:8px">Pick icon:</p>
+            <div class="icon-picker" id="iconPicker"></div>
+            <input type="hidden" id="skIcon" value="python">
+            <button class="btn-add" onclick="addSkill()">+ Add Skill</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJECTS -->
+      <div class="tab-panel" id="tab-projects">
+        <div class="page-head"><h2>Projects</h2><p>Manage section title, add/edit/delete projects</p></div>
+        <div class="card">
+          <h3>Section Display</h3>
+          <div class="form-row single" style="margin-bottom:8px">
+            <input class="af-input" id="projectsSectionTitle" placeholder="Section title (e.g. Featured Work)" value="Featured Work">
+          </div>
+          <button class="btn-add" onclick="saveSectionTitle('projects')">Save Title</button>
+        </div>
+        <div class="card"><h3>All Projects</h3><div id="projectsList"></div></div>
+        <div class="card">
+          <div class="add-form">
+            <h4>Add New Project</h4>
+            <div class="form-row single" style="margin-bottom:8px">
+              <div class="img-upload-wrap" style="padding:12px">
+                <input type="file" accept="image/*" onchange="handleImgUpload(this,'prjImg','prjImgPreview')">
+                <p style="font-size:11px">📷 Upload project image (optional, compact card)</p>
+                <img class="img-preview" id="prjImgPreview" style="height:80px;width:auto;object-fit:contain">
+              </div>
+            </div>
+            <input type="hidden" id="prjImg" value="">
+            <div class="form-row" style="margin-bottom:8px">
+              <input class="af-input" id="prjTitle" placeholder="Project Title *">
+              <input class="af-input" id="prjTags" placeholder="Skills (Python, React, Docker)">
+            </div>
+            <div class="form-row single" style="margin-bottom:8px">
+              <textarea class="af-input" id="prjDesc" placeholder="Project description..."></textarea>
+            </div>
+            <div class="form-row" style="margin-bottom:8px">
+              <input class="af-input" id="prjDemo" placeholder="Demo URL">
+              <input class="af-input" id="prjGH" placeholder="GitHub URL">
+            </div>
+            <div class="form-row" style="margin-bottom:8px">
+              <input class="af-input" id="prjHF" placeholder="HuggingFace URL (optional)">
+              <input class="af-input" id="prjLink" placeholder="Other Link URL (optional)">
+            </div>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--t2);margin-bottom:8px;cursor:pointer">
+              <input type="checkbox" id="prjFeat" style="width:16px;height:16px;accent-color:var(--ac)"> Featured on homepage
+            </label>
+            <button class="btn-add" onclick="addProject()">+ Add Project</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CERTS -->
+      <div class="tab-panel" id="tab-certs">
+        <div class="page-head"><h2>Certifications</h2><p>Manage section title and certifications</p></div>
+        <div class="card">
+          <h3>Section Display</h3>
+          <div class="form-row single" style="margin-bottom:8px">
+            <input class="af-input" id="certsSectionTitle" placeholder="Section title (e.g. Credentials)" value="Credentials">
+          </div>
+          <button class="btn-add" onclick="saveSectionTitle('certs')">Save Title</button>
+        </div>
+        <div class="card"><h3>All Certifications</h3><div id="certsList"></div></div>
+        <div class="card">
+          <div class="add-form">
+            <h4>Add Certification</h4>
+            <div class="form-row single" style="margin-bottom:8px">
+              <div class="img-upload-wrap" style="padding:12px">
+                <input type="file" accept="image/*" onchange="handleImgUpload(this,'certImg','certImgPreview')">
+                <p style="font-size:11px">📷 Upload certificate image (compact card preview)</p>
+                <img class="img-preview" id="certImgPreview" style="height:60px;width:auto;object-fit:contain">
+              </div>
+            </div>
+            <input type="hidden" id="certImg" value="">
+            <div class="form-row" style="margin-bottom:8px">
+              <input class="af-input" id="acTitle" placeholder="Certification Title *">
+              <input class="af-input" id="acIssuer" placeholder="Issuer (Google, AWS...)">
+            </div>
+            <div class="form-row" style="margin-bottom:8px">
+              <input class="af-input" id="acDate" placeholder="Date (Jan 2024)">
+              <input class="af-input" id="acURL" placeholder="Certificate URL">
+            </div>
+            <div class="form-row single" style="margin-bottom:8px">
+              <textarea class="af-input" id="acDesc" placeholder="Short description (optional)..."></textarea>
+            </div>
+            <button class="btn-add" onclick="addCert()">+ Add Certification</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLANS -->
+      <div class="tab-panel" id="tab-plans">
+        <div class="page-head"><h2>Future Plans</h2><p>Manage section title and roadmap</p></div>
+        <div class="card">
+          <h3>Section Display</h3>
+          <div class="form-row" style="margin-bottom:8px">
+            <input class="af-input" id="plansSectionTitle" placeholder="Section title (e.g. Future Plans)" value="Future Plans">
+            <input class="af-input" id="plansSectionSub" placeholder="Subtitle" value="Where I'm heading next">
+          </div>
+          <button class="btn-add" onclick="saveSectionTitle('plans')">Save Title</button>
+        </div>
+        <div class="card"><h3>All Plans</h3><div id="plansList"></div></div>
+        <div class="card">
+          <div class="add-form">
+            <h4>Add Plan</h4>
+            <div class="form-row single" style="margin-bottom:8px">
+              <div class="img-upload-wrap">
+                <input type="file" accept="image/*" onchange="handleImgUpload(this,'planImg','planImgPreview')">
+                <p>📁 Upload banner image (optional)</p>
+                <img class="img-preview" id="planImgPreview">
+              </div>
+            </div>
+            <input type="hidden" id="planImg" value="">
+            <div class="form-row" style="margin-bottom:8px">
+              <input class="af-input" id="apYear" placeholder="Year (2026)">
+              <input class="af-input" id="apTitle" placeholder="Plan Title *">
+            </div>
+            <div class="form-row single" style="margin-bottom:8px">
+              <textarea class="af-input" id="apDesc" placeholder="Description..."></textarea>
+            </div>
+            <button class="btn-add" onclick="addPlan()">+ Add Plan</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CURRENT FOCUS -->
+      <div class="tab-panel" id="tab-focus">
+        <div class="page-head"><h2>Current Focus</h2><p>Manage section title and current focus items</p></div>
+        <div class="card">
+          <h3>Section Display</h3>
+          <div class="form-row single" style="margin-bottom:8px">
+            <input class="af-input" id="focusSectionTitle" placeholder="Section title (e.g. Current Focus)" value="Current Focus">
+          </div>
+          <button class="btn-add" onclick="saveSectionTitle('focus')">Save Title</button>
+        </div>
+        <div class="card"><h3>Focus Items</h3><div id="focusList"></div></div>
+        <div class="card">
+          <div class="add-form">
+            <h4>Add Focus Item</h4>
+            <div class="form-row single" style="margin-bottom:8px">
+              <div class="img-upload-wrap">
+                <input type="file" accept="image/*" onchange="handleImgUpload(this,'focusImg','focusImgPreview')">
+                <p>📁 Upload banner image (optional)</p>
+                <img class="img-preview" id="focusImgPreview">
+              </div>
+            </div>
+            <input type="hidden" id="focusImg" value="">
+            <div class="form-row single" style="margin-bottom:8px">
+              <input class="af-input" id="fcTitle" placeholder="Focus Title *">
+            </div>
+            <div class="form-row single" style="margin-bottom:8px">
+              <textarea class="af-input" id="fcDesc" placeholder="Description..."></textarea>
+            </div>
+            <div class="form-row" style="margin-bottom:8px">
+              <input class="af-input" id="fcProgress" type="number" min="0" max="100" placeholder="Progress % (0-100)">
+              <input class="af-input" id="fcStatus" placeholder="Status (e.g. In Progress)">
+            </div>
+            <button class="btn-add" onclick="addFocus()">+ Add Focus</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTACT -->
+      <div class="tab-panel" id="tab-contact">
+        <div class="page-head"><h2>Contact Section</h2><p>Edit section title, description and contact info</p></div>
+        <div class="card">
+          <h3>Contact Content</h3>
+          <div class="form-row single" style="margin-bottom:8px">
+            <input class="af-input" id="ctTitle" placeholder="Section Title (e.g. Let's Build Something Amazing)">
+          </div>
+          <div class="form-row single" style="margin-bottom:8px">
+            <textarea class="af-input" id="ctDesc" placeholder="Section description..."></textarea>
+          </div>
+          <div class="form-row" style="margin-bottom:8px">
+            <input class="af-input" id="ctEmail" placeholder="Contact Email">
+            <input class="af-input" id="ctPhone" placeholder="Phone (optional)">
+          </div>
+          <div class="form-row single" style="margin-bottom:8px">
+            <input class="af-input" id="ctLocation" placeholder="Location (e.g. San Francisco, CA)">
+          </div>
+          <button class="btn-add" onclick="saveContact()">Save Contact Info</button>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="tab-panel" id="tab-settings">
+        <div class="page-head"><h2>Settings</h2><p>Admin credentials and data management</p></div>
+        <div class="card">
+          <h3>Change Admin Password</h3>
+          <div class="form-row" style="margin-bottom:8px">
+            <input class="af-input" id="newUser" placeholder="New Username">
+            <input class="af-input" type="password" id="newPass" placeholder="New Password">
+          </div>
+          <button class="btn-add purple" onclick="changeCredentials()">Update Credentials</button>
+        </div>
+        <div class="card">
+          <h3>Data Management</h3>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="ab" onclick="exportData()">↓ Export Data JSON</button>
+            <button class="ab del" onclick="resetData()">⚠ Reset All Data</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<div id="toast"></div>
+<div id="confirmModal">
+  <div class="confirm-box">
+    <h3>Confirm Delete</h3>
+    <p id="confirmMsg">Delete this item?</p>
+    <div class="confirm-btns">
+      <button class="btn-cancel" onclick="closeConfirm()">Cancel</button>
+      <button class="btn-confirm-del" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div id="editModal">
+  <div class="edit-box">
+    <h3 id="editModalTitle">Edit Item</h3>
+    <div id="editModalBody"></div>
+    <div class="edit-btns">
+      <button class="btn-cancel" onclick="closeEdit()">Cancel</button>
+      <button class="btn-add" style="flex:1" id="editSaveBtn" onclick="saveEdit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ─── CREDENTIALS ─── */
+let CR = JSON.parse(localStorage.getItem('adminCR') || '{"u":"admin","p":"portfolio2026"}');
+
+/* ─── SKILL ICONS ─── */
+const ICONS = {
+  python:`<svg viewBox="0 0 128 128"><linearGradient id="apg1" x1="70" x2="170" y1="1237" y2="1151" gradientTransform="matrix(.563 0 0 -.568 -29.215 707.817)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#5A9FD4"/><stop offset="1" stop-color="#306998"/></linearGradient><linearGradient id="apg2" x1="209" x2="130" y1="1098" y2="1170" gradientTransform="matrix(.563 0 0 -.568 -29.215 707.817)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD43B"/><stop offset="1" stop-color="#FFE873"/></linearGradient><path fill="url(#apg1)" d="M63.391 1.988c-4.222.02-8.252.379-11.8 1.007-10.45 1.846-12.346 5.71-12.346 12.837v9.411h24.693v3.137H29.977c-7.176 0-13.46 4.313-15.426 12.521-2.268 9.405-2.368 15.275 0 25.096 1.755 7.311 5.947 12.519 13.124 12.519h8.491V67.234c0-8.151 7.051-15.34 15.426-15.34h24.665c6.866 0 12.346-5.654 12.346-12.548V15.833c0-6.693-5.646-11.72-12.346-12.836-4.244-.706-8.645-1.027-12.866-1.009zM50.037 9.557c2.55 0 4.634 2.117 4.634 4.721 0 2.593-2.083 4.69-4.634 4.69-2.56 0-4.633-2.097-4.633-4.69-.001-2.604 2.073-4.721 4.633-4.721z"/><path fill="url(#apg2)" d="M91.682 28.38v10.966c0 8.5-7.208 15.655-15.426 15.655H51.591c-6.756 0-12.346 5.783-12.346 12.549v23.515c0 6.691 5.818 10.628 12.346 12.547 7.816 2.297 15.312 2.713 24.665 0 6.216-1.801 12.346-5.423 12.346-12.547v-9.412H63.938v-3.138h37.012c7.176 0 9.852-5.005 12.348-12.519 2.578-7.735 2.467-15.174 0-25.096-1.774-7.145-5.161-12.521-12.348-12.521h-9.268z"/></svg>`,
+  mysql:`<svg viewBox="0 0 24 24" fill="#4479A1"><path d="M5.77 18.695h-.927a50.854 50.854 0 00-.27-4.41h-.008l-1.41 4.41H2.45l-1.4-4.41h-.01a72.892 72.892 0 00-.195 4.41H0c.055-1.966.192-3.81.41-5.53h1.15l1.335 4.064h.008l1.347-4.064h1.095c.242 2.015.384 3.86.428 5.53z"/></svg>`,
+  git:`<svg viewBox="0 0 24 24" fill="#F05032"><path d="M23.546 10.93L13.067.452a1.55 1.55 0 00-2.188 0L8.708 2.627l2.76 2.76a1.838 1.838 0 012.327 2.341l2.66 2.66a1.838 1.838 0 11-1.549.727l-2.48-2.48v6.53a1.838 1.838 0 11-1.559-.223V8.85a1.838 1.838 0 01-.999-2.41L7.144 3.706.453 10.396a1.55 1.55 0 000 2.188l10.48 10.48a1.55 1.55 0 002.186 0l10.427-10.428a1.55 1.55 0 000-2.187z"/></svg>`,
+  pandas:`<svg viewBox="0 0 24 24" fill="#150458"><path d="M16.922 0h2.222v7.006h-2.222V0zm-4.383 8.31h2.222v1.104H12.54V8.31zm-6.26-2.924h2.222v7.006H6.278V5.386zm0 8.662h2.222v7.006H6.278v-7.006zM16.922 10.048h2.222v7.006h-2.222v-7.006zM12.54 3.386h2.222v3.924H12.54V3.386zm0 6.028h2.222v7.006H12.54v-7.006zm0 8.11h2.222v3.53H12.54v-3.53zM16.922 18.158h2.222v5.006h-2.222v-5.006z"/></svg>`,
+  numpy:`<svg viewBox="0 0 24 24" fill="#013243"><path d="M10.315 4.876L6.098 2.753 1.883 4.876l4.215 2.124 4.217-2.124zm3.29 1.655l-4.33-2.18-4.163 2.097v8.057l4.162 2.097V8.544l4.331-2.013z"/></svg>`,
+  scipy:`<svg viewBox="0 0 24 24" fill="none" stroke="#8CAAE6" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M7 12c0-2.5 2-5 5-5s5 2.5 5 5-2 5-5 5"/></svg>`,
+  excel:`<svg viewBox="0 0 24 24" fill="#217346"><path d="M14 4h-2v16h2V4zm4 4h-2v12h2V8zm-8 3H8v9h2v-9zm-4 3H4v6h2v-6zm12-1h-2v7h2v-7z"/></svg>`,
+  matplotlib:`<svg viewBox="0 0 24 24" fill="none" stroke="#11557C" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="7 17 10 10 13 14 16 8 19 12"/></svg>`,
+  seaborn:`<svg viewBox="0 0 24 24" fill="none" stroke="#4C72B0" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="5" y="13" width="3" height="6" rx="1" fill="#4C72B0" opacity=".5"/><rect x="10" y="9" width="3" height="10" rx="1" fill="#4C72B0" opacity=".7"/><rect x="15" y="6" width="3" height="13" rx="1" fill="#4C72B0"/></svg>`,
+  plotly:`<svg viewBox="0 0 24 24" fill="none" stroke="#3F4F75" stroke-width="1.5"><path d="M3 20L8 10l4 6 4-12 5 8"/><circle cx="8" cy="10" r="2" fill="#3F4F75"/></svg>`,
+  streamlit:`<svg viewBox="0 0 24 24" fill="#FF4B4B"><path d="M12 2L1 12h4v10h14V12h4L12 2z"/></svg>`,
+  powerbi:`<svg viewBox="0 0 24 24" fill="#F2C811"><path d="M14 4h-2v16h2V4zm4 4h-2v12h2V8zm-8 3H8v9h2v-9zm-4 3H4v6h2v-6zm12-1h-2v7h2v-7z"/></svg>`,
+  scikitlearn:`<svg viewBox="0 0 24 24" fill="#F7931E"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><circle cx="12" cy="16" r="3"/></svg>`,
+  xgboost:`<svg viewBox="0 0 24 24" fill="none" stroke="#FF6600" stroke-width="2"><path d="M12 2v20M4 6l8 6-8 6M20 6l-8 6 8 6"/></svg>`,
+  mlflow:`<svg viewBox="0 0 24 24" fill="none" stroke="#0194E2" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>`,
+  tensorflow:`<svg viewBox="0 0 24 24" fill="#FF6F00"><path d="M1.292 5.856L11.54 0v24l-4.095-2.378V7.603l-3.079 1.791-3.074-1.79zm21.416 1.752l-3.074 1.79-3.074-1.79V18.9l-3.079 1.79-.016-7.584 3.095-1.8V24l10.222-5.856-1.074-.623V6.985z"/></svg>`,
+  keras:`<svg viewBox="0 0 24 24" fill="#D00000"><path d="M6 3v18h2.4V14.7L13.4 21h3.2l-5.6-7.2L16 7.2h-3.1l-4.5 5.7V3z"/></svg>`,
+  huggingface:`<svg viewBox="0 0 24 24" fill="#FFD21E"><circle cx="12" cy="12" r="10" fill="none" stroke="#FFD21E" stroke-width="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><path d="M8 15c1 2 3 3 4 3s3-1 4-3" fill="none" stroke="#FFD21E" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+  langchain:`<svg viewBox="0 0 24 24" fill="none" stroke="#1C3C3C" stroke-width="1.5"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="12" r="3"/><path d="M9 12h6"/><circle cx="12" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><path d="M12 9v6"/></svg>`,
+  openai:`<svg viewBox="0 0 24 24" fill="#412991"><path d="M22.282 9.821a5.985 5.985 0 00-.516-4.91 6.046 6.046 0 00-6.51-2.9A6.065 6.065 0 004.981 4.18a5.998 5.998 0 00-3.998 2.9 6.046 6.046 0 00.743 7.097 5.98 5.98 0 00.51 4.911 6.051 6.051 0 006.515 2.9A5.985 5.985 0 0013.26 24a6.056 6.056 0 005.772-4.206 5.99 5.99 0 003.997-2.9 6.056 6.056 0 00-.747-7.073z"/></svg>`,
+  spark:`<svg viewBox="0 0 24 24" fill="#E25A1C"><path d="M12 2L4 7v10l8 5 8-5V7l-8-5zm0 2.5L17.5 8 12 11.5 6.5 8 12 4.5z"/></svg>`,
+  azure:`<svg viewBox="0 0 24 24" fill="#0078D4"><path d="M13.05 4.24L6.56 18.05l2.64.01 1.14-2.73h5.72l-.39-.95H10.95l4.54-10.82L22 18.06h-4.67l1.14 2.73h6.48L13.05 4.24z"/></svg>`,
+  docker:`<svg viewBox="0 0 24 24" fill="#2496ED"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185z"/></svg>`,
+  fastapi:`<svg viewBox="0 0 24 24" fill="#009688"><path d="M12 0C5.375 0 0 5.375 0 12c0 6.627 5.375 12 12 12 6.626 0 12-5.373 12-12 0-6.625-5.373-12-12-12zm-.624 21.62v-7.528H7.19L13.203 2.38v7.528h4.029L11.376 21.62z"/></svg>`,
+  vscode:`<svg viewBox="0 0 24 24" fill="#007ACC"><path d="M23.15 2.587L18.21.21a1.166 1.166 0 00-1.332.183l-8.43 7.672L4.77 5.62a.78.78 0 00-.996.078L2.14 7.282a.78.78 0 00-.004 1.103L5.653 12l-3.517 3.614a.78.78 0 00.004 1.103l1.634 1.584a.78.78 0 00.996.078l3.678-2.444 8.43 7.672a1.166 1.166 0 001.332.183l4.94-2.377A1.176 1.176 0 0024 20.31V3.69a1.176 1.176 0 00-.85-1.103z"/></svg>`,
+  react:`<svg viewBox="0 0 24 24" fill="#61DAFB"><path d="M14.23 12.004a2.236 2.236 0 01-2.235 2.236 2.236 2.236 0 01-2.236-2.236 2.236 2.236 0 012.235-2.236 2.236 2.236 0 012.236 2.236z"/></svg>`,
+  javascript:`<svg viewBox="0 0 24 24" fill="#F7DF1E"><path d="M0 0h24v24H0V0z"/></svg>`,
+  code:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>`
+};
+
+/* ─── DEFAULT DATA ─── */
+const defaultData = {
+  homepage:{name:'Sai Vignesh',title:'Junior Data Scientist | ML Engineer',tagline:'Junior Data Scientist skilled in Machine Learning, Deep Learning, NLP, Generative AI, Python, LLM and cloud deployment. Passionate about building end-to-end AI solutions for real-world problems.',resume:'#',github:'https://github.com',linkedin:'https://linkedin.com',twitter:'#',email:'saivignesg7@gmail.com',huggingface:'https://huggingface.co',phone:'+91-6383560198'},
+  about:{heading:'Building End-to-End AI Solutions',para1:'Junior Data Scientist skilled in Machine Learning, Deep Learning, NLP, Generative AI, Python, LLM and cloud deployment. Passionate about building end-to-end AI solutions for real-world problems.',para2:'BE Computer Science from Vels Institute of Science, Technology & Advanced Studies, Chennai. Experience as Data Science Intern at AI Variant, Data Analyst Intern at Vcodez, and SAP Trainee at Hanon Hanhook.',tags:['Python','Machine Learning','Deep Learning','NLP','Generative AI','LLMs','TensorFlow','PyTorch','FastAPI','Docker','PySpark','Power BI'],stat1:'6+ Projects',stat2:'3 Internships',stat3:'1 Certification'},
+  skills:[
+    {id:1,name:'Python',cat:'Programming',level:95,icon:'python',color:'#3776AB'},
+    {id:2,name:'MySQL',cat:'Programming',level:85,icon:'mysql',color:'#4479A1'},
+    {id:3,name:'GitHub',cat:'Programming',level:82,icon:'git',color:'#F05032'},
+    {id:4,name:'Pandas',cat:'Data Analysis',level:92,icon:'pandas',color:'#150458'},
+    {id:5,name:'NumPy',cat:'Data Analysis',level:90,icon:'numpy',color:'#013243'},
+    {id:6,name:'SciPy',cat:'Data Analysis',level:78,icon:'scipy',color:'#8CAAE6'},
+    {id:7,name:'Excel',cat:'Data Analysis',level:85,icon:'excel',color:'#217346'},
+    {id:8,name:'Matplotlib',cat:'Visualization',level:88,icon:'matplotlib',color:'#11557C'},
+    {id:9,name:'Seaborn',cat:'Visualization',level:85,icon:'seaborn',color:'#4C72B0'},
+    {id:10,name:'Plotly',cat:'Visualization',level:80,icon:'plotly',color:'#3F4F75'},
+    {id:11,name:'Streamlit',cat:'Visualization',level:88,icon:'streamlit',color:'#FF4B4B'},
+    {id:12,name:'Power BI',cat:'Visualization',level:82,icon:'powerbi',color:'#F2C811'},
+    {id:13,name:'Scikit-learn',cat:'Machine Learning',level:90,icon:'scikitlearn',color:'#F7931E'},
+    {id:14,name:'XGBoost',cat:'Machine Learning',level:85,icon:'xgboost',color:'#FF6600'},
+    {id:15,name:'MLflow',cat:'Machine Learning',level:75,icon:'mlflow',color:'#0194E2'},
+    {id:16,name:'TensorFlow',cat:'Deep Learning',level:88,icon:'tensorflow',color:'#FF6F00'},
+    {id:17,name:'Keras',cat:'Deep Learning',level:86,icon:'keras',color:'#D00000'},
+    {id:18,name:'HuggingFace',cat:'Generative AI',level:84,icon:'huggingface',color:'#FFD21E'},
+    {id:19,name:'LangChain',cat:'Generative AI',level:80,icon:'langchain',color:'#1C3C3C'},
+    {id:20,name:'RAG',cat:'Generative AI',level:78,icon:'openai',color:'#412991'},
+    {id:21,name:'PySpark',cat:'Big Data & Cloud',level:72,icon:'spark',color:'#E25A1C'},
+    {id:22,name:'Azure',cat:'Big Data & Cloud',level:70,icon:'azure',color:'#0078D4'},
+    {id:23,name:'Docker',cat:'DevOps & Tools',level:78,icon:'docker',color:'#2496ED'},
+    {id:24,name:'FastAPI',cat:'DevOps & Tools',level:85,icon:'fastapi',color:'#009688'},
+    {id:25,name:'VS Code',cat:'DevOps & Tools',level:90,icon:'vscode',color:'#007ACC'}
+  ],
+  projects:[
+    {id:1,title:'AI-Powered Fraud Detection Dashboard',desc:'Built an interactive analytics dashboard to detect fraud patterns across 50K+ transactions using Isolation Forest and Random Forest, achieving 94%+ accuracy with real-time KPI tracking.',tags:['Python','Scikit-learn','Streamlit','Random Forest'],demo:'#',github:'#',featured:true,img:''},
+    {id:2,title:'CherryAI Document Q&A Chatbot',desc:'Developed a document chatbot with hybrid semantic search (SentenceTransformers + TF-IDF) and OCR, reducing retrieval time by ~40% across PDFs and scanned images.',tags:['NLP','SentenceTransformers','TF-IDF','OCR','Python'],demo:'#',github:'#',featured:true,img:''},
+    {id:3,title:'AI Corruption Detection Dashboard',desc:'Built an ML-powered dashboard to estimate corruption risk across 1000+ government project records, enabling policy-level insights using supervised classification models.',tags:['Python','Scikit-learn','Streamlit','Classification'],demo:'#',github:'#',featured:true,img:''},
+    {id:4,title:'CherryAI Personal Assistant',desc:'Built and deployed CherryAI, a full-stack AI assistant powered by LLaMA3 (Groq API) with web search, file generation and code analysis using Python, Streamlit.',tags:['LLaMA3','Groq API','Streamlit','Python'],demo:'#',github:'#',featured:true,img:''},
+    {id:5,title:'Smart AI Detection',desc:'Built a CNN-based computer vision dashboard for facial recognition, human counting, and product detection, deployed via FastAPI and Streamlit for real-time media analysis.',tags:['CNN','FastAPI','Streamlit','Computer Vision'],demo:'#',github:'#',featured:false,img:''},
+    {id:6,title:'Bank Loan Analysis Dashboard',desc:'Built Bank Loan Analysis Dashboard on 50,000+ records using MySQL, Excel and Power BI with KPI tracking, EDA, Good vs Bad Loan classification and 3-sheet interactive visualization.',tags:['MySQL','Excel','Power BI','EDA'],demo:'#',github:'#',featured:false,img:''}
+  ],
+  certs:[{id:1,title:'Data Science & Gen AI',issuer:'Professional Certification',date:'2025',url:'#',desc:'Comprehensive certification covering Data Science, Machine Learning, and Generative AI.',img:''}],
+  plans:[
+    {id:1,year:'2026',title:'Advanced LLM & Agent Systems',desc:'Building autonomous AI agents with multi-step reasoning, tool use, and RAG pipelines for enterprise applications.',img:''},
+    {id:2,year:'2026',title:'MLOps & Production ML',desc:'Mastering end-to-end ML pipelines with MLflow, Kubernetes, and cloud deployment at scale.',img:''},
+    {id:3,year:'2027',title:'Research & Open Source',desc:'Contributing to open-source AI frameworks, publishing research papers, and building community-driven AI tools.',img:''}
+  ],
+  focus:[
+    {id:1,title:'Generative AI & LLMs',desc:'Deepening expertise in LLMs, Prompt Engineering, RAG, Vector Search, HuggingFace, and SentenceTransformers.',progress:70,status:'Active',img:''},
+    {id:2,title:'Deep Learning & Computer Vision',desc:'Building CNN, RNN, LSTM models with TensorFlow and Keras for real-world applications.',progress:65,status:'In Progress',img:''},
+    {id:3,title:'Cloud & Big Data',desc:'Expanding skills in PySpark, Azure cloud services, and distributed computing.',progress:40,status:'Learning',img:''}
+  ],
+  contact:{title:"Let's Build Something Amazing",desc:'Seeking Data Science or ML Engineering roles. Open to collaborations, freelance projects, and full-time opportunities.',email:'saivignesg7@gmail.com',phone:'+91-6383560198',location:'Bangalore, India'},
+  activity:[]
+};
+
+/* ─── LOAD DATA ─── */
+let D = JSON.parse(localStorage.getItem('pfData') || JSON.stringify(defaultData));
+// Merge missing keys
+for(const k in defaultData){ if(!D[k]) D[k]=defaultData[k]; }
+
+
+function save(){
+  try{
+    localStorage.setItem('pfData',JSON.stringify(D));
+  }catch(e){
+    console.warn('localStorage full, saving to Supabase only');
+    showToast('⚠ Local storage full - data saved to cloud');
+  }
+  updateBadges();
+  saveToSupabase();
+}
+async function saveToSupabase(){
+  if(!supabase)return;
+  try{
+    var {error}=await supabase.from('portfolio_data').upsert({id:1,data:D,updated_at:new Date().toISOString()});
+    if(error)console.error('Supabase save error:',error);
+    else console.log('Saved to Supabase cloud');
+  }catch(e){console.error('Supabase save failed:',e);}
+}
+
+/* ─── LOGIN ─── */
+function doLogin(){
+  var u=document.getElementById('loginU').value.trim();
+  var p=document.getElementById('loginP').value;
+  if(u===CR.u&&p===CR.p){
+    sessionStorage.setItem('adminLogged','1');
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('dashboard').classList.add('visible');
+    loadFormValues();renderAll();
+  }else{
+    document.getElementById('loginErr').style.display='block';
+    document.getElementById('loginP').value='';
+  }
+}
+function doLogout(){
+  sessionStorage.removeItem('adminLogged');
+  document.getElementById('dashboard').classList.remove('visible');
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('loginU').value='';document.getElementById('loginP').value='';
+  document.getElementById('loginErr').style.display='none';
+}
+// Auto-login if session exists
+if(sessionStorage.getItem('adminLogged')==='1'){
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('dashboard').classList.add('visible');
+  setTimeout(function(){loadFormValues();renderAll();},100);
+}
+
+/* ─── TABS ─── */
+function switchTab(btn){
+  document.querySelectorAll('.sn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+}
+function switchTabByName(n){const b=document.querySelector(`.sn[data-tab="${n}"]`);if(b)switchTab(b);}
+
+/* ─── BADGES ─── */
+function updateBadges(){
+  document.getElementById('badgeSkills').textContent=D.skills.length;
+  document.getElementById('badgeProjects').textContent=D.projects.length;
+  document.getElementById('badgeCerts').textContent=D.certs.length;
+  document.getElementById('badgePlans').textContent=D.plans.length;
+  document.getElementById('badgeFocus').textContent=D.focus.length;
+}
+
+/* ─── RENDER ALL ─── */
+function renderAll(){renderOverview();renderSkills();renderProjects();renderCerts();renderPlans();renderFocus();updateBadges();}
+
+/* ─── OVERVIEW ─── */
+function renderOverview(){
+  document.getElementById('statsRow').innerHTML=`
+    <div class="stat-card"><div class="stat-num">${D.projects.length}</div><div class="stat-label">Projects</div></div>
+    <div class="stat-card"><div class="stat-num">${D.skills.length}</div><div class="stat-label">Skills</div></div>
+    <div class="stat-card"><div class="stat-num">${D.certs.length}</div><div class="stat-label">Certs</div></div>
+    <div class="stat-card"><div class="stat-num">${D.plans.length}</div><div class="stat-label">Plans</div></div>
+  `;
+  const recent=(D.activity||[]).slice(-8).reverse();
+  document.getElementById('recentList').innerHTML=recent.length
+    ?recent.map(a=>`<div class="row"><div class="row-info"><div class="row-title">${a.msg}</div><div class="row-sub">${a.time}</div></div></div>`).join('')
+    :`<div class="empty"><p>No recent activity. Start adding content!</p></div>`;
+}
+
+/* ─── LOAD FORM VALUES ─── */
+function loadFormValues(){
+  const h=D.homepage;
+  ['hpName','hpTitle','hpTagline','hpResume','hpGithub','hpLinkedin','hpTwitter','hpEmail'].forEach(id=>{
+    const key=id.replace('hp','').toLowerCase();
+    const map={hpname:'name',hptitle:'title',hptagline:'tagline',hpresume:'resume',hpgithub:'github',hplinkedin:'linkedin',hptwitter:'twitter',hpemail:'email'};
+    const el=document.getElementById(id);
+    if(el)el.value=h[map[id.toLowerCase()]]||'';
+  });
+  const a=D.about;
+  ['abHeading','abPara1','abPara2','abTags','abStat1','abStat2','abStat3'].forEach(id=>{
+    const map={abheading:'heading',abpara1:'para1',abpara2:'para2',abtags:'tags',abstat1:'stat1',abstat2:'stat2',abstat3:'stat3'};
+    const el=document.getElementById(id);
+    if(el){
+      const v=a[map[id.toLowerCase()]];
+      el.value=Array.isArray(v)?v.join(', '):v||'';
+    }
+  });
+  const c=D.contact;
+  ['ctTitle','ctDesc','ctEmail','ctPhone','ctLocation'].forEach(id=>{
+    const map={cttitle:'title',ctdesc:'desc',ctemail:'email',ctphone:'phone',ctlocation:'location'};
+    const el=document.getElementById(id);
+    if(el)el.value=c[map[id.toLowerCase()]]||'';
+  });
+}
+
+/* ─── HOMEPAGE SAVE ─── */
+function saveHomepage(){
+  var resumeInput=document.getElementById('hpResume').value||'';
+  // IMPORTANT: Don't overwrite uploaded resume (data: URL) with empty input
+  var currentResume=D.homepage.resume||'#';
+  if(resumeInput && resumeInput!=='#' && resumeInput.length>5){
+    currentResume=resumeInput;
+  }
+  D.homepage={
+    name:document.getElementById('hpName').value||D.homepage.name||'',
+    title:document.getElementById('hpTitle').value||D.homepage.title||'',
+    tagline:document.getElementById('hpTagline').value||D.homepage.tagline||'',
+    resume:currentResume,
+    github:document.getElementById('hpGithub').value||D.homepage.github||'',
+    linkedin:document.getElementById('hpLinkedin').value||D.homepage.linkedin||'',
+    huggingface:(document.getElementById('hpHuggingface')?document.getElementById('hpHuggingface').value:'')||D.homepage.huggingface||'',
+    email:document.getElementById('hpEmail').value||D.homepage.email||'',
+    phone:D.homepage.phone||''
+  };
+  logActivity('Updated homepage content');save();showToast('✓ Homepage saved!');
+}
+
+/* ─── ABOUT SAVE ─── */
+function saveAbout(){
+  D.about={
+    heading:document.getElementById('abHeading').value,
+    para1:document.getElementById('abPara1').value,
+    para2:document.getElementById('abPara2').value,
+    tags:document.getElementById('abTags').value.split(',').map(s=>s.trim()).filter(Boolean),
+    stat1:document.getElementById('abStat1').value,
+    stat2:document.getElementById('abStat2').value,
+    stat3:document.getElementById('abStat3').value
+  };
+  logActivity('Updated about section');save();showToast('✓ About saved!');
+}
+
+/* ─── CONTACT SAVE ─── */
+function saveContact(){
+  D.contact={
+    title:document.getElementById('ctTitle').value,
+    desc:document.getElementById('ctDesc').value,
+    email:document.getElementById('ctEmail').value,
+    phone:document.getElementById('ctPhone').value,
+    location:document.getElementById('ctLocation').value
+  };
+  logActivity('Updated contact section');save();showToast('✓ Contact saved!');
+}
+
+/* ─── ICON PICKER ─── */
+function buildIconPicker(){
+  const picker=document.getElementById('iconPicker');
+  picker.innerHTML=Object.keys(ICONS).map(k=>`
+    <div class="icon-opt ${k==='python'?'selected':''}" data-icon="${k}" onclick="selectIcon('${k}')">
+      ${ICONS[k]}<span>${k}</span>
+    </div>
+  `).join('');
+}
+function selectIcon(k){
+  document.querySelectorAll('.icon-opt').forEach(o=>o.classList.toggle('selected',o.dataset.icon===k));
+  document.getElementById('skIcon').value=k;
+}
+
+/* ─── SKILLS ─── */
+function renderSkills(){
+  const el=document.getElementById('skillsList');
+  if(!D.skills.length){el.innerHTML=`<div class="empty"><p>No skills yet.</p></div>`;return;}
+  el.innerHTML=D.skills.map((s,i)=>`
+    <div class="row">
+      <div class="row-img placeholder" style="border-color:${s.color}20;color:${s.color}">${ICONS[s.icon]||ICONS.code}</div>
+      <div class="row-info">
+        <div class="row-title">${s.name}</div>
+        <div class="row-sub">${s.cat} · ${s.level}%</div>
+      </div>
+      <div class="row-actions">
+        <button class="ab" onclick="editSkill(${i})">Edit</button>
+        <button class="ab del" onclick="askDelete('skill',${i})">Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
+function addSkill(){
+  const name=document.getElementById('skName').value.trim();
+  if(!name){showToast('⚠ Enter a skill name');return;}
+  D.skills.push({id:Date.now(),name,cat:document.getElementById('skCat').value,level:parseInt(document.getElementById('skLevel').value)||80,icon:document.getElementById('skIcon').value||'code',color:document.getElementById('skColor').value});
+  logActivity(`Added skill: ${name}`);save();renderSkills();
+  document.getElementById('skName').value='';document.getElementById('skLevel').value='';
+  showToast('✓ Skill added!');
+}
+function editSkill(i){
+  const s=D.skills[i];
+  openEdit('Edit Skill',`
+    <div class="form-row" style="margin-bottom:8px"><input class="af-input" id="esk_name" value="${s.name}" placeholder="Name"><select class="af-input" id="esk_cat">${['Languages','Frameworks','Tools','AI/ML','Databases','Cloud'].map(c=>`<option ${s.cat===c?'selected':''}>${c}</option>`).join('')}</select></div>
+    <div class="form-row" style="margin-bottom:8px"><input class="af-input" id="esk_level" type="number" value="${s.level}" placeholder="Level"><input class="af-input" id="esk_color" type="color" value="${s.color}" style="height:44px"></div>
+    <p style="font-size:11px;color:var(--t3);margin-bottom:8px">Icon:</p>
+    <div class="icon-picker" id="editIconPicker">${Object.keys(ICONS).map(k=>`<div class="icon-opt ${s.icon===k?'selected':''}" data-icon="${k}" onclick="selectEditIcon('${k}')">${ICONS[k]}<span>${k}</span></div>`).join('')}</div>
+    <input type="hidden" id="esk_icon" value="${s.icon}">
+  `,()=>{
+    D.skills[i]={...s,name:document.getElementById('esk_name').value,cat:document.getElementById('esk_cat').value,level:parseInt(document.getElementById('esk_level').value)||80,icon:document.getElementById('esk_icon').value,color:document.getElementById('esk_color').value};
+    save();renderSkills();showToast('✓ Skill updated!');
+  });
+}
+function selectEditIcon(k){document.querySelectorAll('#editIconPicker .icon-opt').forEach(o=>o.classList.toggle('selected',o.dataset.icon===k));document.getElementById('esk_icon').value=k;}
+
+/* ─── PROJECTS ─── */
+function renderProjects(){
+  const el=document.getElementById('projectsList');
+  if(!D.projects.length){el.innerHTML=`<div class="empty"><p>No projects yet.</p></div>`;return;}
+  el.innerHTML=D.projects.map((p,i)=>`
+    <div class="row">
+      ${p.img?`<img class="row-img" src="${p.img}">`:`<div class="row-img placeholder">📁</div>`}
+      <div class="row-info">
+        <div class="row-title">${p.title}${p.featured?'<span class="badge-feat">FEATURED</span>':''}</div>
+        <div class="row-sub">${p.tags.join(' · ')}</div>
+      </div>
+      <div class="row-actions">
+        <button class="ab ${p.featured?'feat':''}" onclick="toggleFeatured(${i})">${p.featured?'★':'☆'}</button>
+        <button class="ab" onclick="editProject(${i})">Edit</button>
+        <button class="ab del" onclick="askDelete('project',${i})">Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
+function addProject(){
+  const title=document.getElementById('prjTitle').value.trim();
+  if(!title){showToast('⚠ Enter a project title');return;}
+  D.projects.push({id:Date.now(),title,desc:document.getElementById('prjDesc').value,tags:document.getElementById('prjTags').value.split(',').map(s=>s.trim()).filter(Boolean),demo:document.getElementById('prjDemo').value||'#',github:document.getElementById('prjGH').value||'#',huggingface:document.getElementById('prjHF')?document.getElementById('prjHF').value:'',link:document.getElementById('prjLink')?document.getElementById('prjLink').value:'',featured:document.getElementById('prjFeat').checked,img:document.getElementById('prjImg').value||''});
+  logActivity(`Added project: ${title}`);save();renderAll();
+  ['prjTitle','prjDesc','prjTags','prjDemo','prjGH','prjHF','prjLink'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('prjFeat').checked=false;
+  document.getElementById('prjImg').value='';
+  var pp=document.getElementById('prjImgPreview');if(pp){pp.style.display='none';pp.src='';}
+  showToast('✓ Project added!');
+}
+function toggleFeatured(i){D.projects[i].featured=!D.projects[i].featured;logActivity(`Toggled featured: ${D.projects[i].title}`);save();renderProjects();showToast('✓ Updated!');}
+function editProject(i){
+  const p=D.projects[i];
+  openEdit('Edit Project',`
+    <div class="form-row single" style="margin-bottom:8px"><div class="img-upload-wrap"><input type="file" accept="image/*" onchange="handleImgUpload(this,'epr_img','epr_preview')"><p>📁 Upload banner</p><img class="img-preview" id="epr_preview" ${p.img?`src="${p.img}" style="display:block"`:''}>  </div><input type="hidden" id="epr_img" value="${p.img||''}"></div>
+    <div class="form-row single" style="margin-bottom:8px"><input class="af-input" id="epr_title" value="${p.title}" placeholder="Title"></div>
+    <div class="form-row single" style="margin-bottom:8px"><textarea class="af-input" id="epr_desc">${p.desc}</textarea></div>
+    <div class="form-row" style="margin-bottom:8px"><input class="af-input" id="epr_tags" value="${p.tags.join(', ')}" placeholder="Tags"><input class="af-input" id="epr_demo" value="${p.demo}" placeholder="Demo URL"></div>
+    <div class="form-row single" style="margin-bottom:8px"><input class="af-input" id="epr_gh" value="${p.github}" placeholder="GitHub URL"></div>
+    <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--t2);cursor:pointer"><input type="checkbox" id="epr_feat" ${p.featured?'checked':''} style="accent-color:var(--ac)"> Featured</label>
+  `,()=>{
+    D.projects[i]={...p,title:document.getElementById('epr_title').value,desc:document.getElementById('epr_desc').value,tags:document.getElementById('epr_tags').value.split(',').map(s=>s.trim()).filter(Boolean),demo:document.getElementById('epr_demo').value,github:document.getElementById('epr_gh').value,featured:document.getElementById('epr_feat').checked,img:document.getElementById('epr_img').value};
+    save();renderProjects();showToast('✓ Project updated!');
+  });
+}
+
+/* ─── CERTS ─── */
+function renderCerts(){
+  const el=document.getElementById('certsList');
+  if(!D.certs.length){el.innerHTML=`<div class="empty"><p>No certifications yet.</p></div>`;return;}
+  el.innerHTML=D.certs.map((c,i)=>`
+    <div class="row">
+      ${c.img?`<img class="row-img" src="${c.img}">`:`<div class="row-img placeholder">🏆</div>`}
+      <div class="row-info">
+        <div class="row-title">${c.title}</div>
+        <div class="row-sub">${c.issuer} · ${c.date}</div>
+      </div>
+      <div class="row-actions">
+        <button class="ab" onclick="editCert(${i})">Edit</button>
+        <button class="ab del" onclick="askDelete('cert',${i})">Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
+function addCert(){
+  const title=document.getElementById('acTitle').value.trim();
+  if(!title){showToast('⚠ Enter a title');return;}
+  D.certs.push({id:Date.now(),title,issuer:document.getElementById('acIssuer').value,date:document.getElementById('acDate').value,url:document.getElementById('acURL').value||'#',desc:document.getElementById('acDesc').value,img:document.getElementById('certImg').value});
+  logActivity(`Added cert: ${title}`);save();renderAll();
+  ['acTitle','acIssuer','acDate','acURL','acDesc'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('certImg').value='';document.getElementById('certImgPreview').style.display='none';
+  showToast('✓ Certification added!');
+}
+function editCert(i){
+  const c=D.certs[i];
+  openEdit('Edit Certification',`
+    <div class="form-row single" style="margin-bottom:8px"><div class="img-upload-wrap"><input type="file" accept="image/*" onchange="handleImgUpload(this,'ec_img','ec_preview')"><p>📁 Upload badge/image</p><img class="img-preview" id="ec_preview" ${c.img?`src="${c.img}" style="display:block"`:''}>  </div><input type="hidden" id="ec_img" value="${c.img||''}"></div>
+    <div class="form-row" style="margin-bottom:8px"><input class="af-input" id="ec_title" value="${c.title}" placeholder="Title"><input class="af-input" id="ec_issuer" value="${c.issuer}" placeholder="Issuer"></div>
+    <div class="form-row" style="margin-bottom:8px"><input class="af-input" id="ec_date" value="${c.date}" placeholder="Date"><input class="af-input" id="ec_url" value="${c.url}" placeholder="URL"></div>
+    <div class="form-row single" style="margin-bottom:8px"><textarea class="af-input" id="ec_desc">${c.desc||''}</textarea></div>
+  `,()=>{
+    D.certs[i]={...c,title:document.getElementById('ec_title').value,issuer:document.getElementById('ec_issuer').value,date:document.getElementById('ec_date').value,url:document.getElementById('ec_url').value,desc:document.getElementById('ec_desc').value,img:document.getElementById('ec_img').value};
+    save();renderCerts();showToast('✓ Cert updated!');
+  });
+}
+
+/* ─── PLANS ─── */
+function renderPlans(){
+  const el=document.getElementById('plansList');
+  if(!D.plans.length){el.innerHTML=`<div class="empty"><p>No plans yet.</p></div>`;return;}
+  el.innerHTML=D.plans.map((p,i)=>`
+    <div class="row">
+      ${p.img?`<img class="row-img" src="${p.img}">`:`<div class="row-img placeholder">🗺</div>`}
+      <div class="row-info">
+        <div class="row-title">${p.title}</div>
+        <div class="row-sub">${p.year} · ${p.desc.substring(0,60)}${p.desc.length>60?'...':''}</div>
+      </div>
+      <div class="row-actions">
+        <button class="ab" onclick="editPlan(${i})">Edit</button>
+        <button class="ab del" onclick="askDelete('plan',${i})">Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
+function addPlan(){
+  const title=document.getElementById('apTitle').value.trim();
+  if(!title){showToast('⚠ Enter a title');return;}
+  D.plans.push({id:Date.now(),year:document.getElementById('apYear').value||'2026',title,desc:document.getElementById('apDesc').value,img:document.getElementById('planImg').value});
+  logActivity(`Added plan: ${title}`);save();renderAll();
+  ['apYear','apTitle','apDesc'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('planImg').value='';document.getElementById('planImgPreview').style.display='none';
+  showToast('✓ Plan added!');
+}
+function editPlan(i){
+  const p=D.plans[i];
+  openEdit('Edit Plan',`
+    <div class="form-row single" style="margin-bottom:8px"><div class="img-upload-wrap"><input type="file" accept="image/*" onchange="handleImgUpload(this,'ep_img','ep_preview')"><p>📁 Upload banner</p><img class="img-preview" id="ep_preview" ${p.img?`src="${p.img}" style="display:block"`:''}>  </div><input type="hidden" id="ep_img" value="${p.img||''}"></div>
+    <div class="form-row" style="margin-bottom:8px"><input class="af-input" id="ep_year" value="${p.year}" placeholder="Year"><input class="af-input" id="ep_title" value="${p.title}" placeholder="Title"></div>
+    <div class="form-row single" style="margin-bottom:8px"><textarea class="af-input" id="ep_desc">${p.desc}</textarea></div>
+  `,()=>{
+    D.plans[i]={...p,year:document.getElementById('ep_year').value,title:document.getElementById('ep_title').value,desc:document.getElementById('ep_desc').value,img:document.getElementById('ep_img').value};
+    save();renderPlans();showToast('✓ Plan updated!');
+  });
+}
+
+/* ─── FOCUS ─── */
+function renderFocus(){
+  const el=document.getElementById('focusList');
+  if(!D.focus.length){el.innerHTML=`<div class="empty"><p>No focus items yet.</p></div>`;return;}
+  el.innerHTML=D.focus.map((f,i)=>`
+    <div class="row">
+      ${f.img?`<img class="row-img" src="${f.img}">`:`<div class="row-img placeholder">🎯</div>`}
+      <div class="row-info">
+        <div class="row-title">${f.title}</div>
+        <div class="row-sub">${f.status} · ${f.progress}%</div>
+      </div>
+      <div class="row-actions">
+        <button class="ab" onclick="editFocus(${i})">Edit</button>
+        <button class="ab del" onclick="askDelete('focus',${i})">Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
+function addFocus(){
+  const title=document.getElementById('fcTitle').value.trim();
+  if(!title){showToast('⚠ Enter a title');return;}
+  D.focus.push({id:Date.now(),title,desc:document.getElementById('fcDesc').value,progress:parseInt(document.getElementById('fcProgress').value)||0,status:document.getElementById('fcStatus').value||'In Progress',img:document.getElementById('focusImg').value});
+  logActivity(`Added focus: ${title}`);save();renderAll();
+  ['fcTitle','fcDesc','fcProgress','fcStatus'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('focusImg').value='';document.getElementById('focusImgPreview').style.display='none';
+  showToast('✓ Focus added!');
+}
+function editFocus(i){
+  const f=D.focus[i];
+  openEdit('Edit Focus Item',`
+    <div class="form-row single" style="margin-bottom:8px"><div class="img-upload-wrap"><input type="file" accept="image/*" onchange="handleImgUpload(this,'ef_img','ef_preview')"><p>📁 Upload banner</p><img class="img-preview" id="ef_preview" ${f.img?`src="${f.img}" style="display:block"`:''}>  </div><input type="hidden" id="ef_img" value="${f.img||''}"></div>
+    <div class="form-row single" style="margin-bottom:8px"><input class="af-input" id="ef_title" value="${f.title}" placeholder="Title"></div>
+    <div class="form-row single" style="margin-bottom:8px"><textarea class="af-input" id="ef_desc">${f.desc}</textarea></div>
+    <div class="form-row" style="margin-bottom:8px"><input class="af-input" id="ef_progress" type="number" value="${f.progress}" placeholder="Progress %"><input class="af-input" id="ef_status" value="${f.status}" placeholder="Status"></div>
+  `,()=>{
+    D.focus[i]={...f,title:document.getElementById('ef_title').value,desc:document.getElementById('ef_desc').value,progress:parseInt(document.getElementById('ef_progress').value)||0,status:document.getElementById('ef_status').value,img:document.getElementById('ef_img').value};
+    save();renderFocus();showToast('✓ Focus updated!');
+  });
+}
+
+/* ─── IMAGE UPLOAD ─── */
+async function handleImgUpload(input,hiddenId,previewId){
+  var file=input.files[0];if(!file)return;
+  // Show preview immediately
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var preview=document.getElementById(previewId);
+    if(preview){preview.src=e.target.result;preview.style.display='block';}
+  };
+  reader.readAsDataURL(file);
+  // Try Supabase Storage first (works after deploy)
+  if(supabase){
+    try{
+      var fname='img_'+Date.now()+'_'+file.name.replace(/[^a-zA-Z0-9.]/g,'');
+      var {data,error}=await supabase.storage.from('images').upload(fname,file,{cacheControl:'3600',upsert:true});
+      if(!error){
+        var {data:urlData}=supabase.storage.from('images').getPublicUrl(fname);
+        document.getElementById(hiddenId).value=urlData.publicUrl;
+        showToast('✓ Image uploaded to cloud!');
+        return;
+      }
+    }catch(ex){console.log('Supabase img upload fallback:',ex);}
+  }
+  // Fallback: compress and store as base64
+  var canvas=document.createElement('canvas');
+  var img=new Image();
+  img.onload=function(){
+    var maxW=800,maxH=400;
+    var w=img.width,h=img.height;
+    if(w>maxW){h=h*(maxW/w);w=maxW;}
+    if(h>maxH){w=w*(maxH/h);h=maxH;}
+    canvas.width=w;canvas.height=h;
+    canvas.getContext('2d').drawImage(img,0,0,w,h);
+    document.getElementById(hiddenId).value=canvas.toDataURL('image/jpeg',0.6);
+  };
+  img.src=URL.createObjectURL(file);
+}
+
+/* ─── DELETE ─── */
+let pendingDelete=null;
+function askDelete(type,index){
+  const names={skill:D.skills[index]?.name,project:D.projects[index]?.title,cert:D.certs[index]?.title,plan:D.plans[index]?.title,focus:D.focus[index]?.title};
+  document.getElementById('confirmMsg').textContent=`Delete "${names[type]}"? This cannot be undone.`;
+  pendingDelete={type,index};
+  document.getElementById('confirmModal').classList.add('open');
+}
+function closeConfirm(){document.getElementById('confirmModal').classList.remove('open');pendingDelete=null;}
+function confirmDelete(){
+  if(!pendingDelete)return;
+  const{type,index}=pendingDelete;
+  const map={skill:'skills',project:'projects',cert:'certs',plan:'plans',focus:'focus'};
+  const arr=map[type];const name=D[arr][index]?.title||D[arr][index]?.name;
+  logActivity(`Deleted ${type}: ${name}`);D[arr].splice(index,1);
+  save();renderAll();closeConfirm();showToast('✓ Deleted!');
+}
+
+/* ─── EDIT MODAL ─── */
+let editCallback=null;
+function openEdit(title,body,onSave){
+  document.getElementById('editModalTitle').textContent=title;
+  document.getElementById('editModalBody').innerHTML=body;
+  editCallback=onSave;
+  document.getElementById('editModal').classList.add('open');
+}
+function closeEdit(){document.getElementById('editModal').classList.remove('open');editCallback=null;}
+function saveEdit(){if(editCallback){editCallback();closeEdit();}}
+
+/* ─── SETTINGS ─── */
+function changeCredentials(){
+  const u=document.getElementById('newUser').value.trim();
+  const p=document.getElementById('newPass').value;
+  if(!u||!p){showToast('⚠ Enter both fields');return;}
+  CR={u,p};localStorage.setItem('adminCR',JSON.stringify(CR));
+  document.getElementById('newUser').value='';document.getElementById('newPass').value='';
+  showToast('✓ Credentials updated!');
+}
+function exportData(){
+  const blob=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='portfolio-data.json';a.click();
+}
+function resetData(){
+  if(!confirm('Reset ALL data to defaults? This cannot be undone!'))return;
+  D=JSON.parse(JSON.stringify(defaultData));save();renderAll();loadFormValues();showToast('✓ Data reset!');
+}
+
+/* ─── ACTIVITY ─── */
+function logActivity(msg){
+  if(!D.activity)D.activity=[];
+  D.activity.push({msg,time:new Date().toLocaleString()});
+  if(D.activity.length>30)D.activity=D.activity.slice(-30);
+}
+
+/* ─── TOAST ─── */
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+/* ─── INIT ─── */
+/* ─── SECTION TITLE SAVE ─── */
+function saveSectionTitle(section){
+  if(!D.sectionTitles)D.sectionTitles={};
+  if(section==='skills'){
+    D.sectionTitles.skillsTitle=document.getElementById('skillsSectionTitle')?.value||'My Tech Stack';
+    D.sectionTitles.skillsSub=document.getElementById('skillsSectionSub')?.value||'';
+  }else if(section==='projects'){
+    D.sectionTitles.projectsTitle=document.getElementById('projectsSectionTitle')?.value||'Featured Work';
+  }else if(section==='certs'){
+    D.sectionTitles.certsTitle=document.getElementById('certsSectionTitle')?.value||'Credentials';
+  }else if(section==='plans'){
+    D.sectionTitles.plansTitle=document.getElementById('plansSectionTitle')?.value||'Future Plans';
+    D.sectionTitles.plansSub=document.getElementById('plansSectionSub')?.value||'';
+  }else if(section==='focus'){
+    D.sectionTitles.focusTitle=document.getElementById('focusSectionTitle')?.value||'Current Focus';
+  }
+  save();showToast('✓ Section title saved!');
+}
+
+/* ─── RESUME UPLOAD ─── */
+async function handleResumeUpload(input){
+  var file=input.files[0];if(!file)return;
+  if(file.type!=='application/pdf'){showToast('⚠ Please upload a PDF file');return;}
+  if(file.size>10*1024*1024){showToast('⚠ File too large (max 10MB)');return;}
+  showToast('Uploading resume...');
+
+  // Try Supabase Storage first
+  if(supabase){
+    try{
+      var fileName='resume_'+Date.now()+'.pdf';
+      // Delete old resume if exists
+      await supabase.storage.from('resumes').remove(['resume.pdf']);
+      // Upload new resume
+      var {data,error}=await supabase.storage.from('resumes').upload('resume.pdf',file,{cacheControl:'3600',upsert:true,contentType:'application/pdf'});
+      if(error)throw error;
+      // Get public URL
+      var {data:urlData}=supabase.storage.from('resumes').getPublicUrl('resume.pdf');
+      var publicUrl=urlData.publicUrl+'?t='+Date.now();
+      D.homepage.resume=publicUrl;
+      save();
+      document.getElementById('resumeStatus').style.display='block';
+      document.getElementById('resumeStatus').textContent='✓ Resume uploaded to cloud!';
+      document.getElementById('resumePreview').style.display='block';
+      document.getElementById('resumeLink').href=publicUrl;
+      showToast('✓ Resume uploaded to Supabase! Works everywhere.');
+      setTimeout(function(){document.getElementById('resumeStatus').style.display='none'},4000);
+      return;
+    }catch(e){
+      console.error('Supabase upload failed, falling back to base64:',e);
+      showToast('Cloud upload failed, saving locally...');
+    }
+  }
+
+  // Fallback: save as base64 data URL in localStorage
+  var reader=new FileReader();
+  reader.onload=function(e){
+    D.homepage.resume=e.target.result;
+    save();
+    document.getElementById('resumeStatus').style.display='block';
+    document.getElementById('resumeStatus').textContent='✓ Resume saved locally';
+    document.getElementById('resumePreview').style.display='block';
+    document.getElementById('resumeLink').href=e.target.result;
+    showToast('✓ Resume saved (local only - configure Supabase for cloud)');
+    setTimeout(function(){document.getElementById('resumeStatus').style.display='none'},3000);
+  };
+  reader.readAsDataURL(file);
+}
+
+buildIconPicker();
+document.getElementById('loginU').focus();
+
+// Load data from Supabase on admin open
+async function loadCloudData(){
+  if(!supabase)return;
+  try{
+    var {data,error}=await supabase.from('portfolio_data').select('data').eq('id',1).single();
+    if(data&&data.data){
+      var cloud=data.data;
+      for(var k in cloud)D[k]=cloud[k];
+      localStorage.setItem('pfData',JSON.stringify(D));
+      loadFormValues();renderAll();
+      console.log('Admin loaded cloud data');
+    }
+  }catch(e){console.log('Cloud load:',e);}
+}
+loadCloudData();
+</script>
+</body>
+</html>

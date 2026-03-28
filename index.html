@@ -406,7 +406,6 @@ try {
     <div class="hero-badge">Available for Work</div>
     <h1 class="hero-name" id="heroName">Your Name</h1>
     <div class="hero-title" id="heroTitle">AI Engineer & Developer</div>
-    <p class="hero-bio" id="heroBio">Building intelligent systems that bridge research and production.</p>
     <div class="hero-btns">
       <a href="#" class="btn-primary" id="heroResume" download>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
@@ -661,7 +660,6 @@ try {
     <div class="reveal">
       <div class="section-label">About Me</div>
       <h2 class="section-title" id="aboutHeading">Building End-to-End AI Solutions</h2>
-      <p class="section-sub" id="aboutSub" style="margin-bottom:8px"></p>
     </div>
     <div class="about-text reveal" style="transition-delay:.15s">
       <p id="aboutPara1"></p>
@@ -912,7 +910,6 @@ function populateHero(){
   const h=D.homepage;
   const n=document.getElementById('heroName');if(n){n.textContent=h.name||'Your Name';setTimeout(()=>n.classList.add('typed'),100);}
   const t=document.getElementById('heroTitle');if(t)t.textContent=h.title||'';
-  const b=document.getElementById('heroBio');if(b)b.textContent=h.tagline||'';
   const resumeUrl=h.resume||'';
   const r=document.getElementById('heroResume');
   const vr=document.getElementById('heroViewResume');
@@ -971,9 +968,6 @@ function populateHero(){
 function populateAbout(){
   var a=D.about;if(!a)return;
   var ah=document.getElementById('aboutHeading');if(ah)ah.textContent=a.heading||'About Me';
-  // Subtitle: show homepage tagline as subtitle
-  var sub=document.getElementById('aboutSub');
-  if(sub)sub.textContent=D.homepage.tagline||a.para1||'';
   var ap1=document.getElementById('aboutPara1');if(ap1)ap1.textContent=a.para1||'';
   var ap2=document.getElementById('aboutPara2');if(ap2)ap2.textContent=a.para2||'';
   var tags=document.getElementById('aboutTags');

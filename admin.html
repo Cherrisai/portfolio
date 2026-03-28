@@ -157,10 +157,10 @@ select.af-input{cursor:pointer}
 // MUST match the same values as in index.html
 const SUPABASE_URL = 'https://tbxdnwpxwgkfvkfzorsc.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRieGRud3B4d2drZnZrZnpvcnNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NzM1NjMsImV4cCI6MjA5MDI0OTU2M30.PdyqsmakAW5kqTtcSJrzKw_xPwscVNjgCuT4qHvl7Mk';
-let supabase = null;
+var sb = null;
 try {
   if(SUPABASE_URL !== 'YOUR_SUPABASE_URL' && typeof window.supabase !== 'undefined') {
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   }
 } catch(e) { console.log('Supabase not configured'); }
 </script>
@@ -722,9 +722,9 @@ function save(){
   saveToSupabase();
 }
 async function saveToSupabase(){
-  if(!supabase)return;
+  if(!sb)return;
   try{
-    var {error}=await supabase.from('portfolio_data').upsert({id:1,data:D,updated_at:new Date().toISOString()});
+    var {error}=await sb.from('portfolio_data').upsert({id:1,data:D,updated_at:new Date().toISOString()});
     if(error)console.error('Supabase save error:',error);
     else console.log('Saved to Supabase cloud');
   }catch(e){console.error('Supabase save failed:',e);}
@@ -1098,12 +1098,12 @@ async function handleImgUpload(input,hiddenId,previewId){
   };
   reader.readAsDataURL(file);
   // Try Supabase Storage first (works after deploy)
-  if(supabase){
+  if(sb){
     try{
       var fname='img_'+Date.now()+'_'+file.name.replace(/[^a-zA-Z0-9.]/g,'');
-      var {data,error}=await supabase.storage.from('images').upload(fname,file,{cacheControl:'3600',upsert:true});
+      var {data,error}=await sb.storage.from('images').upload(fname,file,{cacheControl:'3600',upsert:true});
       if(!error){
-        var {data:urlData}=supabase.storage.from('images').getPublicUrl(fname);
+        var {data:urlData}=sb.storage.from('images').getPublicUrl(fname);
         document.getElementById(hiddenId).value=urlData.publicUrl;
         showToast('✓ Image uploaded to cloud!');
         return;
@@ -1213,16 +1213,16 @@ async function handleResumeUpload(input){
   showToast('Uploading resume...');
 
   // Try Supabase Storage first
-  if(supabase){
+  if(sb){
     try{
       var fileName='resume_'+Date.now()+'.pdf';
       // Delete old resume if exists
-      await supabase.storage.from('resumes').remove(['resume.pdf']);
+      await sb.storage.from('resumes').remove(['resume.pdf']);
       // Upload new resume
-      var {data,error}=await supabase.storage.from('resumes').upload('resume.pdf',file,{cacheControl:'3600',upsert:true,contentType:'application/pdf'});
+      var {data,error}=await sb.storage.from('resumes').upload('resume.pdf',file,{cacheControl:'3600',upsert:true,contentType:'application/pdf'});
       if(error)throw error;
       // Get public URL
-      var {data:urlData}=supabase.storage.from('resumes').getPublicUrl('resume.pdf');
+      var {data:urlData}=sb.storage.from('resumes').getPublicUrl('resume.pdf');
       var publicUrl=urlData.publicUrl+'?t='+Date.now();
       D.homepage.resume=publicUrl;
       save();
@@ -1259,9 +1259,9 @@ document.getElementById('loginU').focus();
 
 // Load data from Supabase on admin open
 async function loadCloudData(){
-  if(!supabase)return;
+  if(!sb)return;
   try{
-    var {data,error}=await supabase.from('portfolio_data').select('data').eq('id',1).single();
+    var {data,error}=await sb.from('portfolio_data').select('data').eq('id',1).single();
     if(data&&data.data){
       var cloud=data.data;
       for(var k in cloud)D[k]=cloud[k];

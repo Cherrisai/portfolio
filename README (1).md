@@ -1,6 +1,5 @@
-# AI Engineer Portfolio v4 — Premium Cinematic Edition
 
-Ultra-premium dark portfolio with Tesla AI / OpenAI-grade aesthetics. Single HTML file, zero dependencies, free to deploy anywhere.
+
 
 ---
 

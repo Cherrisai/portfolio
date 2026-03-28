@@ -248,8 +248,9 @@ section{padding:100px 48px;max-width:1200px;margin:0 auto}
 .tl-img.placeholder{background:rgba(255,255,255,.02);display:flex;align-items:center;justify-content:center;font-size:28px;width:200px;height:120px}
 
 /* ═════════ FOCUS ═════════ */
-.focus-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
-.focus-card{background:var(--card);border:1px solid var(--cardb);border-radius:20px;padding:24px;transition:all .5s;position:relative;overflow:hidden}
+.focus-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:20px;padding-bottom:14px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.focus-grid::-webkit-scrollbar{display:none}
+.focus-card{flex:0 0 320px;scroll-snap-align:start;background:var(--card);border:1px solid var(--cardb);border-radius:20px;padding:24px;transition:all .4s;position:relative;overflow:hidden}
 
 .focus-card:hover{transform:translateY(-8px);border-color:rgba(0,229,255,.15);box-shadow:0 24px 60px rgba(0,0,0,.5),0 0 1px rgba(0,229,255,.2)}
 .focus-img{width:100%;height:140px;object-fit:cover;border-radius:12px;margin-bottom:16px}
@@ -371,8 +372,7 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:40px 80px;display:flex
   .tl-desc{font-size:13px;max-width:100%}
 
   /* Focus */
-  .focus-grid{grid-template-columns:1fr}
-  .focus-card{padding:20px}
+  .focus-card{flex:0 0 280px;padding:20px}
   .focus-title{font-size:17px}
 
   /* Contact */
@@ -392,7 +392,6 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:40px 80px;display:flex
   .va-title{font-size:18px}
 
   /* Divider */
-  .divider{margin:0 24px}
 }
 
 /* ─── MOBILE (max 600px) ─── */
@@ -400,7 +399,6 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:40px 80px;display:flex
   /* Base */
   section{padding:40px 18px}
   .section-title{font-size:clamp(22px,6.5vw,30px)}
-  .divider{margin:0}
 
   /* Hero */
   .hero{padding:80px 18px 36px}
@@ -465,9 +463,8 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:40px 80px;display:flex
   .tl-img{max-width:100%;height:auto;margin-top:10px}
 
   /* Focus - horizontal scroll */
-  .focus-grid{display:flex!important;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;padding-bottom:10px;scrollbar-width:none;-webkit-overflow-scrolling:touch;-ms-overflow-style:none}
-  .focus-grid::-webkit-scrollbar{display:none}
-  .focus-card{flex:0 0 260px;scroll-snap-align:start;padding:18px}
+  .focus-grid{gap:14px}
+  .focus-card{flex:0 0 260px;padding:18px}
   .focus-title{font-size:15px}
   .focus-desc{font-size:11px;margin-bottom:12px}
   .progress-label{font-size:9px}
@@ -506,7 +503,7 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:40px 80px;display:flex
   .skill-card{flex:0 0 85px}
   .proj-card{flex:0 0 260px}
   .cert-card{flex:0 0 240px}
-  .focus-card{flex:0 0 230px}
+  .focus-card{flex:0 0 240px}
   .timeline{padding-left:20px}
   .tl-item::before{left:-18px;width:8px;height:8px}
   .tl-item::after{left:-17px;top:7px;width:3px;height:3px}
@@ -516,11 +513,9 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:40px 80px;display:flex
 }
 
 /* ─── PARALLAX & 3D SCROLL EFFECTS ─── */
-.divider{width:100%;height:2px;position:relative;overflow:hidden;margin:0 auto;background:linear-gradient(90deg,transparent,rgba(255,255,255,.03) 30%,rgba(255,255,255,.03) 70%,transparent)}
-.divider::before{content:'';position:absolute;top:0;left:-30%;width:20%;height:100%;background:linear-gradient(90deg,transparent,var(--ac),var(--ac2),transparent);animation:divFlow1 3s linear infinite;box-shadow:0 0 15px rgba(0,229,255,.4),0 0 30px rgba(0,229,255,.15)}
-.divider::after{content:'';position:absolute;top:0;left:-60%;width:15%;height:100%;background:linear-gradient(90deg,transparent,var(--ac2),var(--ac3),transparent);animation:divFlow2 4.5s linear infinite;animation-delay:1.5s;box-shadow:0 0 15px rgba(124,92,252,.3)}
-@keyframes divFlow1{0%{left:-20%}100%{left:100%}}
-@keyframes divFlow2{0%{left:-15%}100%{left:100%}}
+.divider{width:100%;height:1px;position:relative;overflow:hidden;margin:0;background:rgba(255,255,255,.06)}
+.divider::before{content:'';position:absolute;top:0;left:-40%;width:40%;height:100%;background:linear-gradient(90deg,transparent,var(--ac),var(--ac2),var(--ac),transparent);animation:divGlow 4s linear infinite;box-shadow:0 0 8px rgba(0,229,255,.3)}
+@keyframes divGlow{0%{left:-40%}100%{left:100%}}
 
 /* Enhanced card hover across all sections */
 .focus-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.4)}
@@ -610,215 +605,140 @@ try {
   <div class="hero-right reveal" style="transition-delay:.2s">
     <div class="scene-container">
       <!-- Animated SVG Scene: Person working at computer in dark room -->
-      <svg class="hero-svg" viewBox="0 0 540 480" xmlns="http://www.w3.org/2000/svg">
+      <svg class="hero-svg" viewBox="0 0 600 500" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <radialGradient id="roomGrad" cx="50%" cy="40%" r="60%">
-            <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.04"/>
-            <stop offset="100%" stop-color="#000" stop-opacity="1"/>
-          </radialGradient>
-          <radialGradient id="screenGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.15"/>
-            <stop offset="100%" stop-color="#7c5cfc" stop-opacity="0"/>
-          </radialGradient>
-          <radialGradient id="lampGlow" cx="50%" cy="0%" r="80%">
-            <stop offset="0%" stop-color="#ffeaa7" stop-opacity="0.25"/>
-            <stop offset="100%" stop-color="transparent"/>
-          </radialGradient>
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="3" result="blur"/>
-            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-          <filter id="softGlow">
-            <feGaussianBlur stdDeviation="8" result="blur"/>
-            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-          <clipPath id="screenClip">
-            <rect x="170" y="90" width="200" height="130" rx="4"/>
-          </clipPath>
+          <radialGradient id="bgGlow" cx="50%" cy="40%" r="65%"><stop offset="0%" stop-color="#00e5ff" stop-opacity=".06"/><stop offset="100%" stop-color="#000" stop-opacity="1"/></radialGradient>
+          <radialGradient id="scrGlow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#00e5ff" stop-opacity=".2"/><stop offset="100%" stop-color="#7c5cfc" stop-opacity="0"/></radialGradient>
+          <filter id="gl"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="gl2"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <linearGradient id="deskG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a1a2e"/><stop offset="100%" stop-color="#0d0d1a"/></linearGradient>
         </defs>
-
-        <!-- Room background -->
-        <rect width="540" height="480" fill="#000"/>
-        <rect width="540" height="480" fill="url(#roomGrad)" class="room-glow"/>
-
-        <!-- Floor -->
-        <ellipse cx="270" cy="430" rx="220" ry="30" fill="rgba(0,229,255,0.03)"/>
-
-        <!-- Desk surface -->
-        <rect x="100" y="280" width="340" height="16" rx="3" fill="#1a1a2e" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
-        <rect x="108" y="296" width="12" height="80" rx="2" fill="#111"/>
-        <rect x="420" y="296" width="12" height="80" rx="2" fill="#111"/>
-
-        <!-- Monitor base -->
-        <rect x="248" y="276" width="44" height="8" rx="4" fill="#222" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
-        <rect x="263" y="230" width="14" height="50" rx="2" fill="#1a1a1a"/>
-
-        <!-- Monitor frame -->
-        <rect x="150" y="80" width="240" height="155" rx="10" fill="#0d0d1a" stroke="rgba(0,229,255,0.3)" stroke-width="1.5"/>
-        <rect x="155" y="85" width="230" height="145" rx="7" fill="#050508"/>
-
-        <!-- Screen glow behind -->
-        <ellipse cx="270" cy="160" rx="130" ry="80" fill="url(#screenGlow)" opacity="0.8" class="monitor-screen"/>
-
-        <!-- Screen content -->
-        <rect x="160" y="90" width="220" height="135" rx="5" fill="#020208" clip-path="url(#screenClip)"/>
-
-        <!-- Code on screen -->
-        <g clip-path="url(#screenClip)">
-          <!-- Window chrome -->
-          <rect x="160" y="90" width="220" height="18" fill="#0d0d1a"/>
-          <circle cx="173" cy="99" r="4" fill="#ff5f57" opacity="0.8"/>
-          <circle cx="185" cy="99" r="4" fill="#febc2e" opacity="0.8"/>
-          <circle cx="197" cy="99" r="4" fill="#28c840" opacity="0.8"/>
-
-          <!-- Code lines -->
-          <g class="code-line" style="animation-delay:0s">
-            <rect x="168" y="114" width="20" height="3" rx="1.5" fill="#7c5cfc" opacity="0.9"/>
-            <rect x="194" y="114" width="45" height="3" rx="1.5" fill="#00e5ff" opacity="0.9"/>
-            <rect x="244" y="114" width="30" height="3" rx="1.5" fill="#ff6b3d" opacity="0.7"/>
-          </g>
-          <g class="code-line" style="animation-delay:0.3s">
-            <rect x="176" y="122" width="55" height="3" rx="1.5" fill="#39ff14" opacity="0.8"/>
-            <rect x="236" y="122" width="25" height="3" rx="1.5" fill="#fff" opacity="0.4"/>
-          </g>
-          <g class="code-line" style="animation-delay:0.6s">
-            <rect x="176" y="130" width="30" height="3" rx="1.5" fill="#00e5ff" opacity="0.7"/>
-            <rect x="211" y="130" width="50" height="3" rx="1.5" fill="#ffeaa7" opacity="0.6"/>
-          </g>
-          <g class="code-line" style="animation-delay:0.9s">
-            <rect x="168" y="138" width="15" height="3" rx="1.5" fill="#7c5cfc" opacity="0.9"/>
-            <rect x="188" y="138" width="40" height="3" rx="1.5" fill="#ff6b3d" opacity="0.7"/>
-          </g>
-          <g class="code-line" style="animation-delay:1.2s">
-            <rect x="176" y="146" width="65" height="3" rx="1.5" fill="#39ff14" opacity="0.6"/>
-          </g>
-          <g class="code-line" style="animation-delay:1.5s">
-            <rect x="168" y="154" width="85" height="3" rx="1.5" fill="#00e5ff" opacity="0.5"/>
-          </g>
-          <!-- Cursor blink -->
-          <rect x="175" y="162" width="8" height="3" rx="1" class="cursor-blink" fill="#00e5ff"/>
-          <!-- Terminal prompt -->
-          <rect x="168" y="170" width="15" height="3" rx="1.5" fill="#39ff14" opacity="0.8"/>
-          <rect x="188" y="170" width="50" height="3" rx="1.5" fill="#fff" opacity="0.5"/>
+        <rect width="600" height="500" fill="#000"/>
+        <rect width="600" height="500" fill="url(#bgGlow)"/>
+        <!-- Floating hex grid bg -->
+        <g opacity=".03" stroke="#00e5ff" stroke-width=".5" fill="none">
+          <polygon points="100,40 120,30 140,40 140,60 120,70 100,60"/>
+          <polygon points="140,40 160,30 180,40 180,60 160,70 140,60"/>
+          <polygon points="120,70 140,60 160,70 160,90 140,100 120,90"/>
+          <polygon points="400,60 420,50 440,60 440,80 420,90 400,80"/>
+          <polygon points="440,60 460,50 480,60 480,80 460,90 440,80"/>
+          <polygon points="460,120 480,110 500,120 500,140 480,150 460,140"/>
         </g>
-
-        <!-- Screen border glow -->
-        <rect x="155" y="85" width="230" height="145" rx="7" fill="none" stroke="rgba(0,229,255,0.15)" stroke-width="1"/>
-
-        <!-- Keyboard -->
-        <rect x="185" y="285" width="170" height="15" rx="4" fill="#111" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
-        <!-- Keys -->
-        <g fill="rgba(255,255,255,0.12)">
-          <rect x="190" y="288" width="8" height="5" rx="1"/>
-          <rect x="201" y="288" width="8" height="5" rx="1"/>
-          <rect x="212" y="288" width="8" height="5" rx="1"/>
-          <rect x="223" y="288" width="8" height="5" rx="1"/>
-          <rect x="234" y="288" width="8" height="5" rx="1"/>
-          <rect x="245" y="288" width="8" height="5" rx="1"/>
-          <rect x="256" y="288" width="8" height="5" rx="1"/>
-          <rect x="267" y="288" width="8" height="5" rx="1"/>
-          <rect x="278" y="288" width="8" height="5" rx="1"/>
-          <rect x="289" y="288" width="8" height="5" rx="1"/>
-          <rect x="300" y="288" width="8" height="5" rx="1"/>
-          <rect x="311" y="288" width="8" height="5" rx="1"/>
-          <rect x="322" y="288" width="8" height="5" rx="1"/>
-          <rect x="196" y="295" width="48" height="5" rx="1" fill="rgba(0,229,255,0.25)"/><!-- space -->
-        </g>
-
-        <!-- Mouse -->
-        <rect x="370" y="285" width="18" height="25" rx="9" fill="#111" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-        <line x1="379" y1="285" x2="379" y2="300" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
-
-        <!-- Coffee mug -->
-        <rect x="120" y="265" width="24" height="20" rx="3" fill="#1a1a2e" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-        <path d="M144 272 Q155 272 155 278 Q155 284 144 284" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
-        <!-- Steam -->
-        <path class="steam" d="M128 264 Q130 258 128 252" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-linecap="round"/>
-        <path class="steam" d="M135 264 Q137 256 135 250" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" stroke-linecap="round"/>
-
-        <!-- Desk lamp -->
-        <line x1="410" y1="280" x2="410" y2="240" stroke="#333" stroke-width="3" stroke-linecap="round"/>
-        <line x1="410" y1="240" x2="390" y2="210" stroke="#333" stroke-width="3" stroke-linecap="round"/>
-        <ellipse cx="385" cy="207" rx="18" ry="10" fill="#222" stroke="rgba(255,200,0,0.3)" stroke-width="1"/>
-        <!-- Lamp glow -->
-        <ellipse cx="385" cy="240" rx="50" ry="40" fill="url(#lampGlow)"/>
-
-        <!-- PERSON / CHARACTER -->
-        <!-- Chair -->
-        <rect x="220" y="340" width="100" height="8" rx="4" fill="#1a1a1a" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
-        <rect x="235" y="348" width="70" height="60" rx="4" fill="#111"/>
-        <rect x="220" y="348" width="10" height="50" rx="3" fill="#0d0d0d"/>
-        <rect x="310" y="348" width="10" height="50" rx="3" fill="#0d0d0d"/>
-        <rect x="220" y="395" width="100" height="6" rx="3" fill="#0d0d0d"/>
-
-        <!-- Body / torso -->
-        <rect x="237" y="310" width="66" height="35" rx="12" fill="#1e1e3a"/>
-        <!-- Hoodie detail -->
-        <path d="M270 310 L260 325 L280 325 Z" fill="rgba(255,255,255,0.05)"/>
-
-        <!-- Left arm (resting) -->
-        <rect x="218" y="315" width="22" height="14" rx="7" fill="#2a2a4a" transform="rotate(-15 229 322)"/>
-        <!-- Right arm (typing) -->
-        <g class="typing-arm">
-          <rect x="300" y="305" width="22" height="14" rx="7" fill="#2a2a4a" transform="rotate(20 311 312)"/>
-          <rect x="310" y="315" width="18" height="10" rx="5" fill="#2a2a3a"/>
-        </g>
-
-        <!-- Neck -->
-        <rect x="262" y="298" width="16" height="16" rx="6" fill="#c8956c"/>
-
-        <!-- Head -->
-        <g class="person-head">
-          <ellipse cx="270" cy="285" rx="24" ry="26" fill="#d4a574"/>
-          <!-- Hair -->
-          <path d="M246 278 Q248 255 270 255 Q292 255 294 278" fill="#2c1810"/>
-          <path d="M246 278 Q244 268 248 262" fill="#2c1810"/>
-          <path d="M294 278 Q296 268 292 262" fill="#2c1810"/>
-          <!-- Eyes (looking at screen) -->
-          <ellipse cx="261" cy="280" rx="3.5" ry="4" fill="#fff"/>
-          <ellipse cx="279" cy="280" rx="3.5" ry="4" fill="#fff"/>
-          <circle cx="262" cy="281" r="2.5" fill="#1a1a2e"/>
-          <circle cx="280" cy="281" r="2.5" fill="#1a1a2e"/>
-          <circle cx="263" cy="280" r="1" fill="#fff"/>
-          <circle cx="281" cy="280" r="1" fill="#fff"/>
-          <!-- Glasses -->
-          <rect x="255" y="276" width="13" height="10" rx="3" fill="none" stroke="rgba(0,229,255,0.6)" stroke-width="1.2"/>
-          <rect x="272" y="276" width="13" height="10" rx="3" fill="none" stroke="rgba(0,229,255,0.6)" stroke-width="1.2"/>
-          <line x1="268" y1="281" x2="272" y2="281" stroke="rgba(0,229,255,0.6)" stroke-width="1"/>
-          <line x1="255" y1="281" x2="252" y2="280" stroke="rgba(0,229,255,0.5)" stroke-width="1"/>
-          <line x1="285" y1="281" x2="288" y2="280" stroke="rgba(0,229,255,0.5)" stroke-width="1"/>
-          <!-- Mouth (slight smile) -->
-          <path d="M264 292 Q270 296 276 292" fill="none" stroke="rgba(0,0,0,0.4)" stroke-width="1.5" stroke-linecap="round"/>
-        </g>
-
-        <!-- Headphones -->
-        <path d="M247 278 Q247 258 270 256 Q293 258 293 278" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round"/>
-        <rect x="243" y="276" width="8" height="12" rx="4" fill="#222" stroke="rgba(0,229,255,0.3)" stroke-width="1"/>
-        <rect x="289" y="276" width="8" height="12" rx="4" fill="#222" stroke="rgba(0,229,255,0.3)" stroke-width="1"/>
-
-        <!-- Notification pop on screen -->
-        <g class="notif" filter="url(#glow)">
-          <rect x="300" y="120" width="90" height="36" rx="8" fill="rgba(0,229,255,0.08)" stroke="rgba(0,229,255,0.25)" stroke-width="1"/>
-          <circle cx="314" cy="138" r="6" fill="rgba(57,255,20,0.15)" stroke="#39ff14" stroke-width="1"/>
-          <rect x="326" y="130" width="50" height="4" rx="2" fill="rgba(255,255,255,0.4)"/>
-          <rect x="326" y="138" width="36" height="3" rx="1.5" fill="rgba(0,229,255,0.6)"/>
-        </g>
-
-        <!-- Floating particles around monitor -->
+        <!-- Desk -->
+        <rect x="80" y="310" width="440" height="14" rx="4" fill="url(#deskG)" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+        <rect x="95" y="324" width="10" height="90" rx="3" fill="#0d0d1a"/>
+        <rect x="495" y="324" width="10" height="90" rx="3" fill="#0d0d1a"/>
+        <!-- Main monitor -->
+        <rect x="140" y="80" width="320" height="210" rx="12" fill="#0a0a18" stroke="rgba(0,229,255,.25)" stroke-width="1.5"/>
+        <ellipse cx="300" cy="165" rx="170" ry="100" fill="url(#scrGlow)" opacity=".6"/>
+        <!-- Monitor stand -->
+        <rect x="280" y="290" width="40" height="24" rx="3" fill="#111"/>
+        <rect x="260" y="305" width="80" height="8" rx="4" fill="#161622" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+        <!-- Screen content - IDE -->
+        <rect x="148" y="88" width="304" height="196" rx="8" fill="#05050a"/>
+        <!-- Top bar -->
+        <rect x="148" y="88" width="304" height="22" rx="8" fill="#0f0f1e"/>
+        <rect x="148" y="102" width="304" height="8" fill="#0f0f1e"/>
+        <circle cx="163" cy="99" r="4.5" fill="#ff5f57" opacity=".85"/>
+        <circle cx="177" cy="99" r="4.5" fill="#febc2e" opacity=".85"/>
+        <circle cx="191" cy="99" r="4.5" fill="#28c840" opacity=".85"/>
+        <!-- Sidebar -->
+        <rect x="148" y="110" width="50" height="174" fill="#08080f"/>
+        <rect x="154" y="118" width="38" height="4" rx="2" fill="rgba(0,229,255,.15)"/>
+        <rect x="154" y="128" width="28" height="3" rx="1.5" fill="rgba(255,255,255,.06)"/>
+        <rect x="154" y="136" width="34" height="3" rx="1.5" fill="rgba(255,255,255,.06)"/>
+        <rect x="154" y="144" width="24" height="3" rx="1.5" fill="rgba(0,229,255,.08)"/>
+        <rect x="154" y="152" width="30" height="3" rx="1.5" fill="rgba(255,255,255,.06)"/>
+        <rect x="154" y="160" width="36" height="3" rx="1.5" fill="rgba(255,255,255,.06)"/>
+        <!-- Code lines animated -->
         <g>
-          <circle class="particle" cx="155" cy="140" r="2" fill="rgba(0,229,255,0.5)" filter="url(#glow)"/>
-          <circle class="particle" cx="390" cy="160" r="1.5" fill="rgba(124,92,252,0.6)" filter="url(#glow)"/>
-          <circle class="particle" cx="160" cy="200" r="1" fill="rgba(57,255,20,0.4)" filter="url(#glow)"/>
+          <g class="code-line" style="animation-delay:0s"><rect x="206" y="118" width="22" height="4" rx="2" fill="#7c5cfc" opacity=".9"/><rect x="234" y="118" width="55" height="4" rx="2" fill="#00e5ff" opacity=".9"/><rect x="294" y="118" width="35" height="4" rx="2" fill="#ff6b3d" opacity=".7"/></g>
+          <g class="code-line" style="animation-delay:.25s"><rect x="218" y="128" width="65" height="4" rx="2" fill="#39ff14" opacity=".7"/><rect x="288" y="128" width="30" height="4" rx="2" fill="#fff" opacity=".3"/></g>
+          <g class="code-line" style="animation-delay:.5s"><rect x="218" y="138" width="35" height="4" rx="2" fill="#00e5ff" opacity=".6"/><rect x="258" y="138" width="60" height="4" rx="2" fill="#ffeaa7" opacity=".5"/></g>
+          <g class="code-line" style="animation-delay:.75s"><rect x="206" y="148" width="18" height="4" rx="2" fill="#7c5cfc" opacity=".8"/><rect x="228" y="148" width="50" height="4" rx="2" fill="#ff6b3d" opacity=".6"/><rect x="284" y="148" width="40" height="4" rx="2" fill="#39ff14" opacity=".5"/></g>
+          <g class="code-line" style="animation-delay:1s"><rect x="218" y="158" width="75" height="4" rx="2" fill="#00e5ff" opacity=".5"/><rect x="298" y="158" width="28" height="4" rx="2" fill="#fff" opacity=".25"/></g>
+          <g class="code-line" style="animation-delay:1.25s"><rect x="206" y="168" width="90" height="4" rx="2" fill="#39ff14" opacity=".4"/></g>
+          <g class="code-line" style="animation-delay:1.5s"><rect x="218" y="178" width="45" height="4" rx="2" fill="#7c5cfc" opacity=".6"/><rect x="268" y="178" width="55" height="4" rx="2" fill="#ff6b3d" opacity=".5"/></g>
+          <g class="code-line" style="animation-delay:1.75s"><rect x="218" y="188" width="60" height="4" rx="2" fill="#00e5ff" opacity=".5"/><rect x="284" y="188" width="35" height="4" rx="2" fill="#ffeaa7" opacity=".4"/></g>
         </g>
-
-        <!-- Orbit ring around workspace -->
-        <g transform="translate(270,180)">
-          <ellipse class="orbit-ring" cx="0" cy="0" rx="160" ry="50" fill="none" stroke="rgba(0,229,255,0.06)" stroke-width="1" stroke-dasharray="6 8"/>
-          <circle cx="-160" cy="0" r="4" fill="rgba(0,229,255,0.4)" filter="url(#glow)"/>
+        <!-- Cursor blink -->
+        <rect x="206" y="198" width="10" height="4" rx="1.5" fill="#00e5ff" class="cursor-blink"/>
+        <!-- Terminal at bottom -->
+        <rect x="198" y="210" width="246" height="68" rx="4" fill="#020206" stroke="rgba(57,255,20,.1)" stroke-width="1"/>
+        <rect x="204" y="216" width="16" height="3" rx="1.5" fill="#39ff14" opacity=".8"/>
+        <rect x="224" y="216" width="60" height="3" rx="1.5" fill="rgba(255,255,255,.4)"/>
+        <rect x="204" y="224" width="100" height="3" rx="1.5" fill="rgba(0,229,255,.3)"/>
+        <rect x="204" y="232" width="80" height="3" rx="1.5" fill="rgba(255,255,255,.2)"/>
+        <!-- Second monitor (small, angled) -->
+        <rect x="480" y="140" width="100" height="70" rx="6" fill="#0a0a14" stroke="rgba(124,92,252,.2)" stroke-width="1" transform="rotate(8 530 175)"/>
+        <rect x="486" y="146" width="88" height="54" rx="4" fill="#050508" transform="rotate(8 530 175)"/>
+        <rect x="492" y="155" width="40" height="3" rx="1.5" fill="rgba(124,92,252,.4)" transform="rotate(8 530 175)"/>
+        <rect x="492" y="162" width="60" height="3" rx="1.5" fill="rgba(255,255,255,.15)" transform="rotate(8 530 175)"/>
+        <rect x="492" y="169" width="35" height="3" rx="1.5" fill="rgba(0,229,255,.3)" transform="rotate(8 530 175)"/>
+        <!-- Person -->
+        <rect x="240" y="340" width="120" height="8" rx="4" fill="#111" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+        <rect x="252" y="348" width="96" height="55" rx="6" fill="#0d0d0d"/>
+        <rect x="242" y="340" width="8" height="50" rx="3" fill="#0a0a0a"/>
+        <rect x="350" y="340" width="8" height="50" rx="3" fill="#0a0a0a"/>
+        <rect x="252" y="330" width="96" height="15" rx="6" fill="#1c1c36"/>
+        <g class="person-head">
+          <ellipse cx="300" cy="300" rx="26" ry="28" fill="#d4a574"/>
+          <path d="M274 292 Q276 268 300 268 Q324 268 326 292" fill="#1a0e08"/>
+          <path d="M274 292 Q272 282 276 275" fill="#1a0e08"/>
+          <path d="M326 292 Q328 282 324 275" fill="#1a0e08"/>
+          <ellipse cx="290" cy="296" rx="3.5" ry="4" fill="#fff"/>
+          <ellipse cx="310" cy="296" rx="3.5" ry="4" fill="#fff"/>
+          <circle cx="291" cy="297" r="2.5" fill="#1a1a2e"/>
+          <circle cx="311" cy="297" r="2.5" fill="#1a1a2e"/>
+          <circle cx="292" cy="296" r="1" fill="#00e5ff" opacity=".8"/>
+          <circle cx="312" cy="296" r="1" fill="#00e5ff" opacity=".8"/>
+          <rect x="283" y="292" width="14" height="10" rx="3" fill="none" stroke="rgba(0,229,255,.5)" stroke-width="1.2"/>
+          <rect x="303" y="292" width="14" height="10" rx="3" fill="none" stroke="rgba(0,229,255,.5)" stroke-width="1.2"/>
+          <line x1="297" y1="297" x2="303" y2="297" stroke="rgba(0,229,255,.5)" stroke-width="1"/>
+          <path d="M293 308 Q300 312 307 308" fill="none" stroke="rgba(0,0,0,.3)" stroke-width="1.5" stroke-linecap="round"/>
         </g>
-        <g transform="translate(270,200)">
-          <ellipse class="orbit-ring-2" cx="0" cy="0" rx="120" ry="35" fill="none" stroke="rgba(124,92,252,0.06)" stroke-width="1" stroke-dasharray="4 10"/>
-          <circle cx="0" cy="-35" r="3" fill="rgba(124,92,252,0.5)" filter="url(#glow)"/>
+        <path d="M276 292 Q276 272 300 270 Q324 272 324 292" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round"/>
+        <rect x="272" y="290" width="8" height="12" rx="4" fill="#1a1a2e" stroke="rgba(0,229,255,.25)" stroke-width="1"/>
+        <rect x="320" y="290" width="8" height="12" rx="4" fill="#1a1a2e" stroke="rgba(0,229,255,.25)" stroke-width="1"/>
+        <!-- Arms typing -->
+        <g class="typing-arm"><rect x="230" y="325" width="26" height="12" rx="6" fill="#2a2a4a" transform="rotate(-10 243 331)"/></g>
+        <rect x="344" y="325" width="26" height="12" rx="6" fill="#2a2a4a" transform="rotate(10 357 331)"/>
+        <!-- Keyboard -->
+        <rect x="210" y="314" width="180" height="18" rx="4" fill="#0d0d18" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
+        <g fill="rgba(255,255,255,.08)"><rect x="216" y="317" width="9" height="5" rx="1"/><rect x="228" y="317" width="9" height="5" rx="1"/><rect x="240" y="317" width="9" height="5" rx="1"/><rect x="252" y="317" width="9" height="5" rx="1"/><rect x="264" y="317" width="9" height="5" rx="1"/><rect x="276" y="317" width="9" height="5" rx="1"/><rect x="288" y="317" width="9" height="5" rx="1"/><rect x="300" y="317" width="9" height="5" rx="1"/><rect x="312" y="317" width="9" height="5" rx="1"/><rect x="324" y="317" width="9" height="5" rx="1"/><rect x="336" y="317" width="9" height="5" rx="1"/><rect x="348" y="317" width="9" height="5" rx="1"/><rect x="360" y="317" width="9" height="5" rx="1"/><rect x="372" y="317" width="9" height="5" rx="1"/><rect x="255" y="325" width="55" height="5" rx="1.5" fill="rgba(0,229,255,.12)"/></g>
+        <!-- Coffee -->
+        <rect x="108" y="292" width="22" height="22" rx="4" fill="#12121e" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+        <path class="steam" d="M116 290 Q118 282 116 274" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="1.5" stroke-linecap="round"/>
+        <path class="steam" d="M124 290 Q126 280 124 272" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="1.5" stroke-linecap="round" style="animation-delay:.8s"/>
+        <!-- Floating data nodes -->
+        <g filter="url(#gl)">
+          <circle cx="80" cy="120" r="3" fill="rgba(0,229,255,.4)"><animate attributeName="cy" values="120;100;120" dur="5s" repeatCount="indefinite"/></circle>
+          <circle cx="520" cy="100" r="2.5" fill="rgba(124,92,252,.5)"><animate attributeName="cy" values="100;80;100" dur="6s" repeatCount="indefinite"/></circle>
+          <circle cx="60" cy="200" r="2" fill="rgba(57,255,20,.3)"><animate attributeName="cy" values="200;180;200" dur="4s" repeatCount="indefinite"/></circle>
+          <circle cx="540" cy="260" r="2" fill="rgba(255,107,61,.3)"><animate attributeName="cy" values="260;240;260" dur="5.5s" repeatCount="indefinite"/></circle>
+        </g>
+        <!-- Orbiting rings -->
+        <g transform="translate(300,190)">
+          <ellipse class="orbit-ring" cx="0" cy="0" rx="200" ry="55" fill="none" stroke="rgba(0,229,255,.04)" stroke-width="1" stroke-dasharray="4 8"/>
+          <circle cx="-200" cy="0" r="4" fill="rgba(0,229,255,.35)" filter="url(#gl)"/>
+        </g>
+        <g transform="translate(300,200)">
+          <ellipse class="orbit-ring-2" cx="0" cy="0" rx="150" ry="40" fill="none" stroke="rgba(124,92,252,.04)" stroke-width="1" stroke-dasharray="3 10"/>
+          <circle cx="0" cy="-40" r="3" fill="rgba(124,92,252,.4)" filter="url(#gl)"/>
+        </g>
+        <!-- AI/Data floating elements -->
+        <g opacity=".6" filter="url(#gl)">
+          <text x="70" y="160" fill="rgba(0,229,255,.2)" font-family="JetBrains Mono,monospace" font-size="8">def train()</text>
+          <text x="470" y="130" fill="rgba(124,92,252,.2)" font-family="JetBrains Mono,monospace" font-size="7">model.fit()</text>
+          <text x="50" y="260" fill="rgba(57,255,20,.15)" font-family="JetBrains Mono,monospace" font-size="7">pip install</text>
+          <text x="500" y="300" fill="rgba(255,107,61,.15)" font-family="JetBrains Mono,monospace" font-size="7">import torch</text>
+        </g>
+        <!-- Notification -->
+        <g class="notif" filter="url(#gl)">
+          <rect x="360" y="94" width="80" height="30" rx="8" fill="rgba(0,229,255,.06)" stroke="rgba(0,229,255,.2)" stroke-width="1"/>
+          <circle cx="374" cy="109" r="5" fill="rgba(57,255,20,.12)" stroke="#39ff14" stroke-width="1"/>
+          <rect x="384" y="103" width="44" height="4" rx="2" fill="rgba(255,255,255,.3)"/>
+          <rect x="384" y="111" width="30" height="3" rx="1.5" fill="rgba(0,229,255,.5)"/>
         </g>
       </svg>
     </div>
